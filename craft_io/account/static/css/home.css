@@ -1,0 +1,16 @@
+* {
+    font-family: 'Parkinsans', sans-serif !important;
+}
+.fa-solid {
+    font-family: "Font Awesome 6 Free", sans-serif !important;
+}
+
+/* Additional styling for testing icon visibility */
+.btn i {
+    font-size: 2em; /* Increase icon size */
+    color: #0a0000;
+}
+.fa-cart-shopping {
+    font-size: 2em; /* Make cart icon larger */
+    color: #030811;
+}

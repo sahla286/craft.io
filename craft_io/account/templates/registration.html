@@ -1,0 +1,40 @@
+{% extends 'navbar.html' %}
+{% block nav %}
+            <div class="d-flex justify-content-center align-items-center" style="height: 90vh;background-color: #fde1ff;">
+                <div class="p-3 row" style="height: 460px;width: 500px;background-color: white;border-radius: 0px;">
+                        <h3 class="mt-5 ms-3 me-3" style="font-weight: 700;">Sign Up</h3>
+                        <form action="" method="post">
+                            {% csrf_token %}
+                            <div class="mb-3 ms-3 me-3" style="width: 410px;height: 50px;border-radius: 0%;">
+                                <p class="text-center text-danger">{{form.username.error}}</p>
+                                {{form.username}}
+                            </div>
+                            <div class="mb-3 ms-3 me-3" style="width: 410px;height: 50px;border-radius: 0%;">
+                                <p class="text-center text-danger">{{form.email.error}}</p>
+                                {{form.email}}
+                            </div>
+                            <div class="mb-3 ms-3 me-3" style="width: 410px;height: 50px;border-radius: 0%;">
+                                <p class="text-center text-danger">{{form.password1.error}}</p>
+                                {{form.password1}}
+                            </div>
+                            <!-- <div class="mb-3 ms-3 me-3" style="width: 410px;height: 50px;border-radius: 0%;">
+                                <p class="text-center text-danger">{{form.password2.error}}</p>
+                                {{form.password2}}
+                            </div> -->
+                            <div class="mb-3 ms-3 me-3" >
+                                <button class="btn text-light"  style="width: 410px;height: 50px;border-radius: 0%;background-color: #ff4141;;">Continue</button>
+                            </div>
+                            <p class="ms-3 me-3 mb-5 text-secondary">
+                                Already have an account? 
+                                <a href="{% url 'login' %}" style="text-decoration: none; color: #ff4141;font-weight: 700;">
+                                    Login here
+                                </a>
+                            </p>
+                            
+                        </form>
+                    
+                </div>
+            </div>
+
+
+            {% endblock nav %}
