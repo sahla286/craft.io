@@ -1,0 +1,45 @@
+{% extends 'navbar.html' %}
+{% block nav %}
+{% load static %}
+
+
+
+<style>
+
+    /* Optional: Hover effect for the entire card */
+    .card {
+        transition: transform 0.6s ease, box-shadow 0.6s ease;
+    }
+
+    .card:hover {
+        transform: scale(1.05); /* Slight zoom for the entire card */
+        box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2); /* Add shadow */
+    }
+</style>
+<!-- banner -->
+<div class="mt-4">
+    {% if category == 'PaperCraft' %}
+        <img src="{% static 'image/banner_papercraft.jpg' %}" alt="" style="height: 230px; width: 1160px; margin-left: 50px; margin-right: 50px;">
+    {% elif category == 'Wooden' %}
+        <img src="{% static 'image/banner_bamboos.jpg' %}" alt="" style="height: 230px; width: 1160px; margin-left: 50px; margin-right: 50px;">
+    {% elif category == 'Jute' %}
+        <img src="{% static 'image/banner_jute.jpg' %}" alt="" style="height: 230px; width: 1160px; margin-left: 50px; margin-right: 50px;">
+    {% endif %}
+</div>
+
+<!-- product list -->
+<div class="d-flex justify-content-center flex-wrap mt-5" style="gap: 30px;">
+    {% for i in products %}
+    <div class="card" style="width: 16rem; border-radius: 0%; margin-top: 10px;margin-bottom: 30px;">
+        <img src="{{i.image.url}}" height="300px" class="card-img-top" alt="...">
+        <div class="card-body">
+            <h6 class="card-title">{{i.title}}</h6>
+            <p class="card-text" style="display: inline; margin-right: 10px;"><b style="font-size: x-large;">&#8377;{{i.offerprice}}</b></p>
+            <s class="card-text text-secondary">&#8377;{{i.price}}</s>
+            <a href="{% url 'pdetail' i.id %}" class="stretched-link"></a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock nav %}

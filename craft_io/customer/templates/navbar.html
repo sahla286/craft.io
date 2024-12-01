@@ -1,4 +1,5 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,12 +39,31 @@
             display: flex;
             align-items: center;
         }
+
+        /* Style for HR to act as bottom border for navbar */
+        .navbar {
+            position: relative;
+        }
+
+        .navbar + hr {
+            margin-top: 0; /* Optional, remove any margin above */
+            border: none;
+            border-top: 2px solid #8e8d8d; /* Creates a thin black border */
+            /* box-shadow: 0 4px 6px rgba(118, 118, 118, 0.1); Optional shadow for depth */
+            margin-bottom: 0; /* Optional, to avoid extra space below the hr */
+        }
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 1030; /* Ensures the navbar stays above other content */
+            background-color: white; /* Ensures the navbar background remains visible */
+        }
     </style>
 </head>
 <body>
 
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light p-1 ms-5">
+    <nav class="navbar navbar-expand-lg navbar-light p-1 ms-5 ">
         <div class="container-fluid">
             <a class="navbar-brand me-5" href="#">
                 <h3 style="font-weight: 700; font-family: 'Times New Roman', Times, serif;">
@@ -54,22 +74,22 @@
             <div class="collapse navbar-collapse d-flex justify-content-center" id="navbarTogglerDemo03">
                 <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link" href="#" style="color: rgb(171, 132, 249);">
+                        <a class="nav-link" href="{% url 'shop' %}" style="color: rgb(171, 132, 249);">
                             <h5 class="ms-3">Shop</h5>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#" style="color: rgb(171, 132, 249);">
+                        <a class="nav-link" href="{% url 'products' 'PaperCraft' %}" style="color: rgb(171, 132, 249);">
                             <h5 class="ms-3">Paper Craft</h5>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#" style="color: rgb(171, 132, 249);">
+                        <a class="nav-link" href="{% url 'products' 'Wooden' %}" style="color: rgb(171, 132, 249);">
                             <h5 class="ms-3">Wooden</h5>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#" style="color: rgb(171, 132, 249);">
+                        <a class="nav-link" href="{% url 'products' 'Jute' %}" style="color: rgb(171, 132, 249);">
                             <h5 class="ms-3">Jute</h5>
                         </a>
                     </li>
@@ -79,14 +99,17 @@
                     <button class="btn" type="submit" style="height: 40px; background-color: #ff4141; padding: 10px; border: none;">
                         <i class="fa-solid fa-magnifying-glass" style="color: #f9fafb;"></i>
                     </button>
-                    <a href="#" class="btn btn-outline-dark rounded-btn ms-4" style="border-radius: 30px; padding: 10px 30px;">Login</a>
-                    <a href="#" class="d-flex justify-content-center align-items-center ms-4" style="text-decoration: none;">
+                    <a href="{% url 'login' %}" class="btn btn-outline-dark rounded-btn ms-4" style="border-radius: 30px; padding: 10px 30px;">Login</a>
+                    <a href="{% url 'cartlist' %}" class="d-flex justify-content-center align-items-center ms-4" style="text-decoration: none;">
                         <i class="fa-solid fa-cart-shopping fa-xl me-5" style="color:black;"></i>
                     </a>
                 </form>
             </div>
         </div>
     </nav>
+
+    <!-- HR as bottom border of navbar -->
+    <hr>
 
     {% block nav %}
     {% endblock nav %}
