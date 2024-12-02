@@ -4,9 +4,9 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import password_validation
 
 class LoginForm(forms.Form):
-    email=forms.CharField(max_length=100,widget=forms.TextInput(attrs={
+    username=forms.CharField(max_length=100,widget=forms.TextInput(attrs={
         'class': 'form-control',
-        'placeholder':'Email Address',
+        'placeholder':'Username',
         'style': 'width: 100%; height: 50px; border-radius: 0;'}))
     password=forms.CharField(max_length=100,widget=forms.PasswordInput(attrs={
         'class': 'form-control',

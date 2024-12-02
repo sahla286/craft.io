@@ -102,7 +102,11 @@
                     <a href="{% url 'login' %}" class="btn btn-outline-dark rounded-btn ms-4" style="border-radius: 30px; padding: 10px 30px;">Login</a>
                     <a href="{% url 'cartlist' %}" class="d-flex justify-content-center align-items-center ms-4" style="text-decoration: none;">
                         <i class="fa-solid fa-cart-shopping fa-xl me-5" style="color:black;"></i>
+                        <span class="position-absolute top-7 start-90 translate-middle badge rounded-pill" style="background-color:#ff4141;padding: 4px 6px 4px 6px;">
+                            {{cart}}
+                          </span>
                     </a>
+                    
                 </form>
             </div>
         </div>

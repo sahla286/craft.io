@@ -36,5 +36,51 @@
     <p style="font-size:20px;border: solid 1px lightgrey;padding:60px 50px 60px 60px;margin: 0;">{{product.description}}</p>
 </div>
 
+
+
+
+
+<!-- rating and review -->
+
+<!-- Average Rating -->
+
+<div style="margin: 70px;">
+    <p><b>Average Rating:</b> {{ avg_rating|floatformat:1 }}/5</p>
+
+    <!-- Add a Review -->
+    <h4 style="font-size: 22px; font-weight: bold; margin-top: 40px;">Write a Review</h4>
+    <form method="post" action="{% url 'add_review' product.id %}">
+        {% csrf_token %}
+        <div class="mb-3">
+            {{ form.as_p }}
+        </div>
+        <button type="submit" class="btn text-light d-flex justify-content-center" style="background-color: #ff4141;width: 200px;">Add Review</button>
+    </form>
+
+    <!-- Existing Reviews -->
+    <h4 class="mt-5" style="font-size: 22px; font-weight: bold;">Customer Reviews</h4>
+    <div>
+        {% for review in reviews %}
+            <div class="review-card" style="background-color: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                <p><b>{{ review.user.username }}</b> - {{ review.created_at|date:"d M Y" }}</p>
+                <p><b>Rating:</b> {{ review.rating }}/5</p>
+                <p>{{ review.comment }}</p>
+                {% if review.user == request.user %}
+                    <div class="d-flex">
+                        <a href="{% url 'update_review' review.id %}" class="btn btn-warning btn-sm" style="margin-right: 10px;">Edit</a>
+                        <form method="POST" action="{% url 'delete_review' review.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </div>
+                {% endif %}
+            </div>
+        <hr>
+        {% empty %}
+            <p>No reviews yet.</p>
+        {% endfor %}
+    </div>
+</div>
+
 {% endblock nav %}
 

@@ -1,0 +1,24 @@
+{% extends 'navbar.html' %}
+
+{% block nav %}
+<div class="container mt-5">
+
+    <!-- Review Form -->
+    <form method="post" class="card p-4 shadow-sm" style="background-color: #f9f9f9; border-radius: 8px;">
+        {% csrf_token %}
+        <h4 class="mb-4" style="font-size: 22px; font-weight: bold;">Write a Review</h4>
+
+        <div class="mb-3">
+            <label for="rating" class="form-label"><b>Rating (out of 5):</b></label>
+            {{ form.rating }}
+        </div>
+
+        <div class="mb-3">
+            <label for="comment" class="form-label"><b>Comment:</b></label>
+            {{ form.comment }}
+        </div>
+
+        <button type="submit" class="btn" style="background-color: #ff4141; border-radius: 0px; width: 200px;">Submit Review</button>
+    </form>
+</div>
+{% endblock %}
