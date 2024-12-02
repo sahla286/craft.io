@@ -10,10 +10,10 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(
-            model_name='products',
-            name='created_at',
-            field=models.DateTimeField(auto_now_add=True, default=1),
-            preserve_default=False,
-        ),
-    ]
+    migrations.AlterField(
+        model_name='products',
+        name='created_at',
+        field=models.DateTimeField(auto_now_add=True),
+    ),
+]
+

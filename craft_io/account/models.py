@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.utils.timezone import now
+from django.utils import timezone
+
 
 
 # Create your models here.
@@ -13,7 +14,7 @@ class Productss(models.Model):
     image=models.ImageField(upload_to='product_images')
     stock=models.IntegerField()
     ShippingFee=models.CharField(max_length=100,default='Free')
-    created_at = models.DateTimeField(default=now)
+    created_at = models.DateTimeField(default=timezone.now)
     options=(
         ('PaperCraft','PaperCraft'),
         ('Wooden','Wooden'),

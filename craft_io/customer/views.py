@@ -1,15 +1,22 @@
 from django.shortcuts import render,redirect
 from django.views.generic import ListView,DetailView
-from account.models import Products,Cart
+from account.models import Productss,Cart
 
 class ShopView(ListView):
     template_name='shop.html'
-    queryset=Products.objects.all()
+    queryset=Productss.objects.all()
     context_object_name='products'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Add the latest products (new collections) to the context
+        latest_products = Productss.objects.all().order_by('-created_at')[:8]
+        context['latest_products'] = latest_products
+        return context
     
 class ProductListView(ListView):
     template_name = 'productlist.html'
-    queryset = Products.objects.all()
+    queryset = Productss.objects.all()
     context_object_name = 'products'  # key name for products
 
     def get_queryset(self):
@@ -23,21 +30,23 @@ class ProductListView(ListView):
         category = self.kwargs.get('cat')
         context['category'] = category
         return context
+    
+    
 
-# def new_collections_view(request):
-#     latest_products = Products.objects.all().order_by('-created_at')[:8]
-#     return render(request, 'your_template.html', {'latest_products': latest_products})
+
+
+
 
 class ProductDetailView(DetailView):
     template_name='productdetail.html'
-    queryset=Products.objects.all()
+    queryset=Productss.objects.all()
     context_object_name='product'
     pk_url_kwarg='id' 
 
 def addToCart(request,*args,**kwargs):
     try:
         pid=kwargs.get('id')
-        product=Products.objects.get(id=pid)
+        product=Productss.objects.get(id=pid)
         user=request.user
         cartcheck=Cart.objects.filter(product=product,user=user).exists()
         if cartcheck:

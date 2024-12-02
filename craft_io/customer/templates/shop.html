@@ -65,10 +65,25 @@
 
 <!-- new collections -->
 
-<div style="margin-top: 90px;">
-    <h2 class="text-center" style="font-weight: 600;">NEW COLLECTIONS</h2>
+<h2 class="text-center mt-5" style="font-weight: 600;">NEW COLLECTIONS</h2>
 
-
+<div class="d-flex justify-content-center flex-wrap mt-5" style="gap: 30px;">
+    {% for i in latest_products %}
+    <div class="card" style="width: 16rem; border-radius: 0%; margin-top: 50px;">
+        <img src="{{i.image.url}}" height="300px" class="card-img-top" alt="...">
+        <div class="card-body">
+            <h6 class="card-title">{{i.title}}</h6>
+            <p class="card-text" style="display: inline; margin-right: 10px;">
+                <b style="font-size: x-large;">&#8377;{{i.offerprice}}</b>
+            </p>
+            <s class="card-text text-secondary">&#8377;{{i.price}}</s>
+            <a href="{% url 'pdetail' i.id %}" class="stretched-link"></a>
+        </div>
+    </div>
+    {% endfor %}
 </div>
+
+
+
 
 {% endblock nav %}
