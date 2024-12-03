@@ -1,24 +1,47 @@
 {% extends 'navbar.html' %}
-
 {% block nav %}
-<div class="container mt-5">
 
-    <!-- Review Form -->
-    <form method="post" class="card p-4 shadow-sm" style="background-color: #f9f9f9; border-radius: 8px;">
-        {% csrf_token %}
-        <h4 class="mb-4" style="font-size: 22px; font-weight: bold;">Write a Review</h4>
 
-        <div class="mb-3">
-            <label for="rating" class="form-label"><b>Rating (out of 5):</b></label>
-            {{ form.rating }}
-        </div>
+<!-- <style>
+    input[type="radio"] {
+        display: none;
+    }
 
-        <div class="mb-3">
-            <label for="comment" class="form-label"><b>Comment:</b></label>
-            {{ form.comment }}
-        </div>
+    label {
+        font-size: 30px;
+        color: lightgray;
+        cursor: pointer;
+    }
 
-        <button type="submit" class="btn" style="background-color: #ff4141; border-radius: 0px; width: 200px;">Submit Review</button>
-    </form>
-</div>
+    input[type="radio"]:checked ~ label {
+        color: gold;
+    }
+
+    input[type="radio"]:checked ~ label:hover,
+    input[type="radio"]:hover ~ label {
+        color: gold;
+    }
+</style> -->
+
+
+<div style="margin: 70px;">
+    <!-- Rating as stars -->
+ <h4>Write a Review</h4>
+ <form method="post" action="">
+     {% csrf_token %}
+     {{ form.as_p }}
+     
+     <!-- Star Rating System -->
+     <!-- <div>
+         <label for="rating">Rating: </label>
+         <input type="radio" id="star1" name="rating" value="1"><label for="star1">☆</label>
+         <input type="radio" id="star2" name="rating" value="2"><label for="star2">☆</label>
+         <input type="radio" id="star3" name="rating" value="3"><label for="star3">☆</label>
+         <input type="radio" id="star4" name="rating" value="4"><label for="star4">☆</label>
+         <input type="radio" id="star5" name="rating" value="5"><label for="star5">☆</label>
+     </div> -->
+ 
+     <button type="submit" class="btn btn-primary">Submit Review</button>
+ </form>
+ </div>
 {% endblock %}

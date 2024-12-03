@@ -10,6 +10,8 @@ urlpatterns=[
     path('decc/<int:id>',decreaseQuantity,name='decQuantity'),
     path('removeitem/<int:id>',deleteCartItem,name='removeitem'),
     path('product/<int:id>/review/', add_review, name='add_review'),
-    path('review/<int:id>/update/', update_review, name='update_review'),
+    path('review/<int:review_id>/update/', update_review, name='update_review'),
+
+    # path('review/<int:revid>/update/', update_review, name='update_review'),
     path('review/<int:id>/delete/',delete_review, name='delete_review'),
 ]

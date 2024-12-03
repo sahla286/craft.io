@@ -1,5 +1,13 @@
 {% extends 'navbar.html' %}
 {% block nav %}
+{% load custom_filters %}
+
+
+
+
+
+
+
 
 <!-- prodct detail -->
 
@@ -15,6 +23,7 @@
         </div>
         <div class="col d-flex flex-column mt-4"><br>
             <h4><b>{{product.title}}</b></h4><br>
+            <p><b>Average Rating:</b> {{ avg_rating|floatformat:1 }}/5</p>
             <s class="text-secondary" style="font-size:x-large;">&#8377;{{product.price}}</s>
             <p style="color: #ff4141;font-size:x-large;">&#8377;{{product.offerprice}}</p>
             <p style="font-weight: bold;font-size: large;">Shipping Fee : <span style="font-weight: lighter;">{{product.ShippingFee}}</span>
@@ -44,43 +53,83 @@
 
 <!-- Average Rating -->
 
-<div style="margin: 70px;">
-    <p><b>Average Rating:</b> {{ avg_rating|floatformat:1 }}/5</p>
+<p><b>Average Rating:</b> {{ avg_rating|floatformat:1 }}/5</p>
 
-    <!-- Add a Review -->
-    <h4 style="font-size: 22px; font-weight: bold; margin-top: 40px;">Write a Review</h4>
-    <form method="post" action="{% url 'add_review' product.id %}">
-        {% csrf_token %}
-        <div class="mb-3">
-            {{ form.as_p }}
-        </div>
-        <button type="submit" class="btn text-light d-flex justify-content-center" style="background-color: #ff4141;width: 200px;">Add Review</button>
-    </form>
 
-    <!-- Existing Reviews -->
-    <h4 class="mt-5" style="font-size: 22px; font-weight: bold;">Customer Reviews</h4>
+<h2>Review for {{ product.name }}</h2>
+
+<!-- Rating as stars -->
+<h4>Write a Review</h4>
+<form method="post" action="{% url 'add_review' product.id %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <!-- Star Rating System -->
     <div>
-        {% for review in reviews %}
-            <div class="review-card" style="background-color: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-                <p><b>{{ review.user.username }}</b> - {{ review.created_at|date:"d M Y" }}</p>
-                <p><b>Rating:</b> {{ review.rating }}/5</p>
-                <p>{{ review.comment }}</p>
-                {% if review.user == request.user %}
-                    <div class="d-flex">
-                        <a href="{% url 'update_review' review.id %}" class="btn btn-warning btn-sm" style="margin-right: 10px;">Edit</a>
-                        <form method="POST" action="{% url 'delete_review' review.id %}" style="display:inline;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                        </form>
-                    </div>
-                {% endif %}
-            </div>
-        <hr>
-        {% empty %}
-            <p>No reviews yet.</p>
-        {% endfor %}
+        <label for="rating">Rating: </label>
+        <input type="radio" id="star1" name="rating" value="1" {% if form.rating.value == "1" %}checked{% endif %}><label for="star1">☆</label>
+        <input type="radio" id="star2" name="rating" value="2" {% if form.rating.value == "2" %}checked{% endif %}><label for="star2">☆</label>
+        <input type="radio" id="star3" name="rating" value="3" {% if form.rating.value == "3" %}checked{% endif %}><label for="star3">☆</label>
+        <input type="radio" id="star4" name="rating" value="4" {% if form.rating.value == "4" %}checked{% endif %}><label for="star4">☆</label>
+        <input type="radio" id="star5" name="rating" value="5" {% if form.rating.value == "5" %}checked{% endif %}><label for="star5">☆</label>
     </div>
+
+    <button type="submit" class="btn btn-primary">Add Review</button>
+</form>
+
+<hr>
+
+<!-- Existing Reviews -->
+<h4 class="mt-5">Customer Reviews</h4>
+<div>
+    {% for review in reviews %}
+        <div>
+            <p><b>{{ review.user.username }}</b> - {{ review.created_at|date:"d M Y" }}</p>
+            <p>Rating: 
+                {% for i in 1|to:review.rating %}
+                    ★
+                {% endfor %}
+                {% for i in review.rating|to:5 %}
+                    ☆
+                {% endfor %}
+            </p>
+            <p>{{ review.comment }}</p>
+            {% if review.user == request.user %}
+            <a href="{% url 'update_review' review.id %}" class="btn btn-warning btn-sm" style="margin-right: 10px;">Edit</a>
+                <form method="POST" action="{% url 'delete_review' review.id %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                </form>
+            {% endif %}
+        </div>
+        <hr>
+    {% empty %}
+        <p>No reviews yet.</p>
+    {% endfor %}
 </div>
+
+
+
+<style>
+    input[type="radio"] {
+        display: none;
+    }
+
+    label {
+        font-size: 30px;
+        color: lightgray;
+        cursor: pointer;
+    }
+
+    input[type="radio"]:checked ~ label {
+        color: gold;
+    }
+
+    input[type="radio"]:checked ~ label:hover,
+    input[type="radio"]:hover ~ label {
+        color: gold;
+    }
+</style>
 
 {% endblock nav %}
 

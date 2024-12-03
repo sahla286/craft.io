@@ -80,16 +80,23 @@ def add_review(request, id):
     return render(request, 'add_review.html', {'form': form, 'product': product})
 
 @login_required
-def update_review(request, id):
-    review = get_object_or_404(ProductReview, id=id, user=request.user)
+def update_review(request, review_id):
+    # Assuming 'review_id' is passed to get the review object
+    review = ProductReview.objects.get(id=review_id)
+    
     if request.method == 'POST':
         form = ProductReviewForm(request.POST, instance=review)
+        
         if form.is_valid():
             form.save()
-            return redirect('pdetail', id=review.product.id)
+            # After saving the form, redirect to the 'add_review' URL
+            return redirect(reverse('pdetail', kwargs={'id': review.product.id}))
     else:
         form = ProductReviewForm(instance=review)
+
     return render(request, 'add_review.html', {'form': form, 'review': review})
+
+
 
 @login_required
 def delete_review(request, id):
@@ -99,7 +106,6 @@ def delete_review(request, id):
         review.delete()
         return redirect('pdetail', id=product_id)
     return render(request, 'add_review.html', {'review': review})
-
 
 
 def addToCart(request,*args,**kwargs):
