@@ -21,48 +21,75 @@ class ShopView(ListView):
         context['latest_products'] = latest_products
         return context
     
+# This view fetches the products for a particular category
 class ProductListView(ListView):
     template_name = 'productlist.html'
     queryset = Productss.objects.all()
-    context_object_name = 'products'  # key name for products
+    context_object_name = 'products'
 
     def get_queryset(self):
+        # Extract 'cat' from the URL
         cat = self.kwargs.get('cat')
         self.request.session['category'] = cat
         return self.queryset.filter(category=cat)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Add the category name to the context for banner image logic
-        category = self.kwargs.get('cat')
+        category = self.kwargs.get('cat')  # Get category from the URL
         context['category'] = category
         return context
-    
+
     
 
 class ProductDetailView(DetailView):
-    template_name='productdetail.html'
-    queryset=Productss.objects.all()
-    context_object_name='product'
-    pk_url_kwarg='id' 
-
-
+    template_name = 'productdetail.html'
+    queryset = Productss.objects.all()
+    context_object_name = 'product'
+    pk_url_kwarg = 'id'  # Ensure the 'id' argument is used to fetch the product.
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         product = self.get_object()
-        
+
         # Fetch all reviews related to this product
         reviews = product.reviews.all()
-        
+
         # Calculate the average rating
         avg_rating = reviews.aggregate(Avg('rating'))['rating__avg']
-        
+
         # Add reviews and average rating to context
         context['reviews'] = reviews
-        context['avg_rating'] = avg_rating or 0  # Default to 0 if no reviews
+        context['avg_rating'] = avg_rating if avg_rating else 0  # Ensure a value even if no reviews exist
+
+        # Fetch related products (exclude the current product)
+        related_products = Productss.objects.filter(category=product.category).exclude(id=product.id)[:4]
+        context['related_products'] = related_products
         return context
 
+
+def product_detail(request, id):
+    product = get_object_or_404(Productss, pk=id)
+    
+    # Get the average rating for the product
+    avg_rating = ProductReview.objects.filter(product=product).aggregate(Avg('rating'))['rating__avg'] or 0
+    
+    form = ProductReviewForm()  # A form to add a new review
+    
+    return render(request, 'productdetail.html', {
+        'product': product,
+        'avg_rating': avg_rating,
+        'form': form,
+        'category': product.category,  # Ensure category is passed for the breadcrumb
+    })
+
+    
+def view_reviews(request, pk):
+    product = get_object_or_404(Productss, pk=pk)
+    reviews = ProductReview.objects.filter(product=product)
+    return render(request, 'view_reviews.html', {
+        'product': product,
+        'reviews': reviews
+    })
 
 @login_required
 def add_review(request, id):

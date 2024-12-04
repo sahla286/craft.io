@@ -1,0 +1,36 @@
+{% extends 'navbar.html' %}
+{% block nav %}
+{% load custom_filters %}
+
+<div class="container mt-5">
+    <h2>Reviews for {{ product.name }}</h2>
+
+    <!-- Existing Reviews -->
+    <div>
+        {% for review in reviews %}
+            <div>
+                <p><b>{{ review.user.username }}</b> - {{ review.created_at|date:"d M Y" }}</p>
+                <p>Rating: 
+                    {% for i in 1|to:review.rating %}
+                        ★
+                    {% endfor %}
+                    {% for i in review.rating|to:5 %}
+                        ☆
+                    {% endfor %}
+                </p>
+                <p>{{ review.comment }}</p>
+                {% if review.user == request.user %}
+                    <a href="{% url 'update_review' review.id %}" class="btn btn-warning btn-sm" style="margin-right: 10px;">Edit</a>
+                    <form method="POST" action="{% url 'delete_review' review.id %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                {% endif %}
+            </div>
+            <hr>
+        {% empty %}
+            <p>No reviews yet.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

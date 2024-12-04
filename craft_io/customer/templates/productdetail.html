@@ -2,28 +2,38 @@
 {% block nav %}
 {% load custom_filters %}
 
+<!-- breadcrumb -->
 
+<div style="margin: 50px 0px 20px 80px;">
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb" style="font-size: larger;">
+        <li class="breadcrumb-item"><a href="{% url 'shop' %}" style="text-decoration: none;color: rgb(135, 135, 136);">Shop</a></li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'products' product.category %}" style="text-decoration: none;color: rgb(135, 135, 136);">{{ product.category }}</a>
 
-
-
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">{{ product.title }}</li>
+    </ol>
+</nav>
+</div>
 
 
 
 <!-- prodct detail -->
 
-<div class="d-flex" style="height: 100%;gap: 20px;margin: 30px;">
-        <div class="col-md-1 d-flex flex-column ms-5 mt-5">
+<div class="d-flex" style="height: 100%;gap: 20px;margin: 30px;margin-top: 0px;">
+        <div class="col-md-1 d-flex flex-column ms-5 mt-4">
             <img src="{{product.image.url}}" alt="" style="height: 100px; width: 100px;margin-bottom: 10px;">
             <img src="{{product.image.url}}" alt="" style="height: 100px; width: 100px;margin-bottom: 10px;">
             <img src="{{product.image.url}}" alt="" style="height: 100px; width: 100px;margin-bottom: 10px;">
             <img src="{{product.image.url}}" alt="" style="height: 100px; width: 100px;">
         </div>
-        <div class="col-md-4 mt-5">
+        <div class="col-md-4 mt-4">
             <img src="{{product.image.url}}" class="img-fluid " alt="" style="height: 430px; width: 350px;">
         </div>
-        <div class="col d-flex flex-column mt-4"><br>
-            <h4><b>{{product.title}}</b></h4><br>
-            <p><b>Average Rating:</b> {{ avg_rating|floatformat:1 }}/5</p>
+        <div class="col d-flex flex-column " ><br>
+            <h4><b>{{product.title}}</b></h4>
+            <p class="mt-2"><b>Average Rating:</b> {{ avg_rating|floatformat:1 }}/5</p>
             <s class="text-secondary" style="font-size:x-large;">&#8377;{{product.price}}</s>
             <p style="color: #ff4141;font-size:x-large;">&#8377;{{product.offerprice}}</p>
             <p style="font-weight: bold;font-size: large;">Shipping Fee : <span style="font-weight: lighter;">{{product.ShippingFee}}</span>
@@ -34,8 +44,33 @@
                     <b class="ms-2">ADD TO CART</b>
                 </a>
             </div>
+            <!-- rating and review -->
+
+    <!-- Add Review Section -->
+    <h5>Write a Review</h5>
+    <form method="post" action="{% url 'add_review' product.id %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <!-- Star Rating System -->
+        <div>
+            <label for="rating">Rating: </label>
+            <input type="radio" id="star1" name="rating" value="1"><label for="star1">☆</label>
+            <input type="radio" id="star2" name="rating" value="2"><label for="star2">☆</label>
+            <input type="radio" id="star3" name="rating" value="3"><label for="star3">☆</label>
+            <input type="radio" id="star4" name="rating" value="4"><label for="star4">☆</label>
+            <input type="radio" id="star5" name="rating" value="5"><label for="star5">☆</label>
         </div>
+
+        <button type="submit" class="btn btn-primary mt-2">Add Review</button>
+    </form>
+
+    <!-- Link to view all reviews -->
+    <div class="mt-4">
+        <a href="{% url 'view_reviews' product.pk %}">View All Reviews</a>
+    </div>
 </div>
+        </div>
 
 
 <!-- product description -->
@@ -46,71 +81,39 @@
 </div>
 
 
-
-
-
-<!-- rating and review -->
-
-<!-- Average Rating -->
-
-<p><b>Average Rating:</b> {{ avg_rating|floatformat:1 }}/5</p>
-
-
-<h2>Review for {{ product.name }}</h2>
-
-<!-- Rating as stars -->
-<h4>Write a Review</h4>
-<form method="post" action="{% url 'add_review' product.id %}">
-    {% csrf_token %}
-    {{ form.as_p }}
-
-    <!-- Star Rating System -->
-    <div>
-        <label for="rating">Rating: </label>
-        <input type="radio" id="star1" name="rating" value="1" {% if form.rating.value == "1" %}checked{% endif %}><label for="star1">☆</label>
-        <input type="radio" id="star2" name="rating" value="2" {% if form.rating.value == "2" %}checked{% endif %}><label for="star2">☆</label>
-        <input type="radio" id="star3" name="rating" value="3" {% if form.rating.value == "3" %}checked{% endif %}><label for="star3">☆</label>
-        <input type="radio" id="star4" name="rating" value="4" {% if form.rating.value == "4" %}checked{% endif %}><label for="star4">☆</label>
-        <input type="radio" id="star5" name="rating" value="5" {% if form.rating.value == "5" %}checked{% endif %}><label for="star5">☆</label>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Add Review</button>
-</form>
-
-<hr>
-
-<!-- Existing Reviews -->
-<h4 class="mt-5">Customer Reviews</h4>
-<div>
-    {% for review in reviews %}
-        <div>
-            <p><b>{{ review.user.username }}</b> - {{ review.created_at|date:"d M Y" }}</p>
-            <p>Rating: 
-                {% for i in 1|to:review.rating %}
-                    ★
-                {% endfor %}
-                {% for i in review.rating|to:5 %}
-                    ☆
-                {% endfor %}
-            </p>
-            <p>{{ review.comment }}</p>
-            {% if review.user == request.user %}
-            <a href="{% url 'update_review' review.id %}" class="btn btn-warning btn-sm" style="margin-right: 10px;">Edit</a>
-                <form method="POST" action="{% url 'delete_review' review.id %}" style="display:inline;">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                </form>
-            {% endif %}
+<!-- Related Products -->
+<div style="margin: 50px;">
+    <h2 class="text-center mt-5" style="font-weight: 600;">RELATED PRODUCTS</h2>
+    <div class="d-flex justify-content-center flex-wrap mt-3" style="gap: 30px;">
+        {% for related_product in related_products %}
+        <div class="card" style="width: 16rem; border-radius: 0%; margin-top: 10px; margin-bottom: 30px;">
+            <img src="{{ related_product.image.url }}" height="300px" class="card-img-top" alt="{{ related_product.title }}">
+            <div class="card-body">
+                <h6 class="card-title">{{ related_product.title }}</h6>
+                <p class="card-text" style="display: inline; margin-right: 10px;">
+                    <b style="font-size: x-large;">&#8377;{{ related_product.offerprice }}</b>
+                </p>
+                <s class="card-text text-secondary">&#8377;{{ related_product.price }}</s>
+                <a href="{% url 'pdetail' related_product.id %}" class="stretched-link"></a>
+            </div>
         </div>
-        <hr>
-    {% empty %}
-        <p>No reviews yet.</p>
-    {% endfor %}
+        {% empty %}
+        <p>No related products available.</p>
+        {% endfor %}
+    </div>
 </div>
 
 
 
-<style>
+
+
+
+
+
+
+
+
+<!-- <style>
     input[type="radio"] {
         display: none;
     }
@@ -129,7 +132,7 @@
     input[type="radio"]:hover ~ label {
         color: gold;
     }
-</style>
+</style> -->
 
 {% endblock nav %}
 
