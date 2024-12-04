@@ -45,3 +45,10 @@ class ProductReview(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.product.title} - {self.rating}"
+
+class Wishlist(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    product = models.ForeignKey(Productss, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.product.title}"

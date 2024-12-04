@@ -33,10 +33,20 @@
         </div>
         <div class="col d-flex flex-column " ><br>
             <h4><b>{{product.title}}</b></h4>
-            <p class="mt-2"><b>Average Rating:</b> {{ avg_rating|floatformat:1 }}/5</p>
+            <!-- <p class="mt-2"><b>Average Rating:</b> {{ avg_rating|floatformat:1 }}/5</p> -->
+            <p class="mt-2" style="color: goldenrod;font-size:x-large;">
+                {% for i in 5|range_filter %}
+                    {% if i < avg_rating %}
+                    ★ <!-- Filled star -->
+                    {% else %}
+                    ☆  <!-- Empty star -->
+                    {% endif %}
+                {% endfor %}
+            </p>
+            
             <s class="text-secondary" style="font-size:x-large;">&#8377;{{product.price}}</s>
             <p style="color: #ff4141;font-size:x-large;">&#8377;{{product.offerprice}}</p>
-            <p style="font-weight: bold;font-size: large;">Shipping Fee : <span style="font-weight: lighter;">{{product.ShippingFee}}</span>
+            <p style="font-weight: bold;font-size: large; margin-top: 0px;">Shipping Fee : <span style="font-weight: lighter;">{{product.ShippingFee}}</span>
             <div>
                 <!-- <a href="" class="btn btn-outline-primary text-dark mb-5"> -->
                 <a href="{% url 'addtocart' product.id %}" class="btn text-light d-flex justify-content-center" style="background-color: #ff4141;width: 170px;border-radius: 0px;height: 50px;">
@@ -88,7 +98,8 @@
         {% for related_product in related_products %}
         <div class="card" style="width: 16rem; border-radius: 0%; margin-top: 10px; margin-bottom: 30px;">
             <img src="{{ related_product.image.url }}" height="300px" class="card-img-top" alt="{{ related_product.title }}">
-            <div class="card-body">
+            
+    <div class="card-body">
                 <h6 class="card-title">{{ related_product.title }}</h6>
                 <p class="card-text" style="display: inline; margin-right: 10px;">
                     <b style="font-size: x-large;">&#8377;{{ related_product.offerprice }}</b>

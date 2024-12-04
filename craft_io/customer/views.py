@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.views.generic import ListView,DetailView
-from account.models import Productss,Cart,ProductReview
+from account.models import *
 from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -215,3 +215,19 @@ def deleteCartItem(request, **kwargs):
     except:
         return redirect('cartlist')
     
+@login_required
+def add_to_wishlist(request, product_id):
+    product = Productss.objects.get(id=product_id)
+    Wishlist.objects.get_or_create(user=request.user, product=product)
+    return redirect('wishlist_view')
+
+@login_required
+def remove_from_wishlist(request, product_id):
+    product = Productss.objects.get(id=product_id)
+    Wishlist.objects.filter(user=request.user, product=product).delete()
+    return redirect('wishlist_view')
+
+@login_required
+def wishlist_view(request):
+    wishlist_items = Wishlist.objects.filter(user=request.user)
+    return render(request, 'wishlist.html', {'wishlist_items': wishlist_items})

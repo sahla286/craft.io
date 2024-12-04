@@ -2,6 +2,12 @@ from django import template
 register = template.Library()
 
 @register.filter
-def to(value, arg):
-    # Your filter logic here
-    return str(value) + str(arg)
+def to(value, max_value):
+    """This will return a list with filled stars and empty stars."""
+    filled_stars = '★' * value
+    empty_stars = '☆' * (max_value - value)
+    return filled_stars + empty_stars
+
+@register.filter
+def range_filter(value):
+    return range(value)

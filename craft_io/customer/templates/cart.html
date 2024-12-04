@@ -21,7 +21,9 @@
         {% for i in carts %}
             <tr class="align-middle">
                 <td>
-                    <img src="{{i.product.image.url}}" alt="" class="img-fluid" height="50px" width="50px">
+                    <a href="{% url 'pdetail' i.product.id %}">
+                        <img src="{{ i.product.image.url }}" alt="{{ item.product.title }}" class="img-fluid" height="50px" width="50px">
+                    </a>
                 </td>
                 <td>{{i.product.title}}</td>
                 <td>&#8377; {{i.product.price}}</td>

@@ -32,6 +32,11 @@
     {% for i in products %}
     <div class="card" style="width: 16rem; border-radius: 0%; margin-top: 10px;margin-bottom: 30px;">
         <img src="{{i.image.url}}" height="300px" class="card-img-top" alt="...">
+        
+        <!-- Wishlist Button (Heart Icon) -->
+        <a href="{% url 'add_to_wishlist' i.id %}" class="mt-2 position-absolute top-0 end-0 m-2 text-danger" style="font-size: 30px; z-index: 10;">
+            <i class="fas fa-heart" style="color: #7d1a06"></i> <!-- Correct class for the heart icon -->
+        </a>
         <div class="card-body">
             <h6 class="card-title">{{i.title}}</h6>
             <p class="card-text" style="display: inline; margin-right: 10px;"><b style="font-size: x-large;">&#8377;{{i.offerprice}}</b></p>

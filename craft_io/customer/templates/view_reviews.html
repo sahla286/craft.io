@@ -3,7 +3,7 @@
 {% load custom_filters %}
 
 <div class="container mt-5">
-    <h2>Reviews for {{ product.name }}</h2>
+    <h4>Reviews for {{ product.title }}</h4>
 
     <!-- Existing Reviews -->
     <div>
@@ -11,13 +11,13 @@
             <div>
                 <p><b>{{ review.user.username }}</b> - {{ review.created_at|date:"d M Y" }}</p>
                 <p>Rating: 
-                    {% for i in 1|to:review.rating %}
-                        ★
-                    {% endfor %}
-                    {% for i in review.rating|to:5 %}
-                        ☆
-                    {% endfor %}
+                    {% with review.rating as rating %}
+                        {{ rating|to:5 }}
+                    {% endwith %}
                 </p>
+                
+
+
                 <p>{{ review.comment }}</p>
                 {% if review.user == request.user %}
                     <a href="{% url 'update_review' review.id %}" class="btn btn-warning btn-sm" style="margin-right: 10px;">Edit</a>
