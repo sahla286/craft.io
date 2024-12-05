@@ -8,24 +8,36 @@
     <!-- Existing Reviews -->
     <div>
         {% for review in reviews %}
-            <div>
-                <p><b>{{ review.user.username }}</b> - {{ review.created_at|date:"d M Y" }}</p>
-                <p>Rating: 
-                    {% with review.rating as rating %}
-                        {{ rating|to:5 }}
-                    {% endwith %}
-                </p>
-                
+            <div class="row mb-3">
+                <!-- Review Content Column -->
+                <div class="col-md-10">
+                    <p><b>{{ review.user.username }}</b> - {{ review.created_at|date:"d M Y" }}</p>
+                    <p>Rating: 
+                        {% with review.rating as rating %}
+                            {{ rating|to:5 }}
+                        {% endwith %}
+                    </p>
+                    <p>{{ review.comment }}</p>
+                </div>
 
-
-                <p>{{ review.comment }}</p>
+                <!-- Icons Column (Edit and Delete) -->
                 {% if review.user == request.user %}
-                    <a href="{% url 'update_review' review.id %}" class="btn btn-warning btn-sm" style="margin-right: 10px;">Edit</a>
-                    <form method="POST" action="{% url 'delete_review' review.id %}" style="display:inline;">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                    </form>
-                {% endif %}
+    <div class="col-md-2">
+        <!-- Edit Icon (on a new line) -->
+        <a href="{% url 'update_review' review.id %}" class="d-block mb-2">
+            <i class="fa-solid fa-pen-to-square fa-xl"></i>
+        </a>
+
+        <!-- Delete Icon (on a new line) -->
+        <form method="POST" action="{% url 'delete_review' review.id %}">
+            {% csrf_token %}
+            <button type="submit" style="background: none; border: none; padding: 0;">
+                <i class="fa-solid fa-trash fa-xl" style="color: #bb180c;"></i>
+            </button>
+        </form>
+    </div>
+{% endif %}
+
             </div>
             <hr>
         {% empty %}

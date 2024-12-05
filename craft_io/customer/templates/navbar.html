@@ -94,13 +94,7 @@
                         </a>
                     </li>
                 </ul>
-
-
-            <a href="{% url 'wishlist_view' %}">wishlist</a>
-            <a href="{% url 'orderlist' %}" class="ms-5">orderlist</a>
                   
-
-
 
                 <form class="d-flex align-items-center">
                     <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" style="width: 170px; height: 40px;">
@@ -114,6 +108,31 @@
                             {{cart}}
                           </span>
                     </a>
+                    <i class="fa-solid fa-user fa-xl me-5" 
+                                 style="color: #0a0a0a; cursor: pointer;" 
+                                 id="userDropdown" 
+                                data-bs-toggle="dropdown" 
+                                 aria-expanded="false">
+                    </i>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                        <li>
+                            <a class="dropdown-item" href="{% url 'wishlist_view' %}">Wishlist
+                                <span class="badge rounded-pill" style="background-color:#ff4141;padding: 4px 6px 4px 6px;">
+                                    {{wishlist}}
+                                  </span>
+                            </a>
+                            
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'orderlist' %}">Orderlist
+                                <span class=" badge rounded-pill" style="background-color:#ff4141;padding: 4px 6px 4px 6px;">
+                                    {{order}}
+                                  </span>
+                            </a>
+                            
+                        </li>
+                    </ul>
+
                     
                 </form>
             </div>
