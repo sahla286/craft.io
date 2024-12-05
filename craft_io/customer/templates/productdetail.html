@@ -2,6 +2,45 @@
 {% block nav %}
 {% load custom_filters %}
 
+
+<style>
+    /* Hide the radio buttons */
+input[type="checkbox"] {
+    visibility: hidden; /* Make radio buttons invisible */
+}
+
+/* Style the stars */
+input[type="checkbox"] + label {
+    font-size: 25px;    /* Adjust the size of the stars */
+    color: #ddd;        /* Default color for the stars (unselected) */
+    cursor: pointer;    /* Cursor pointer when hovering over the stars */
+}
+
+/* Style for when the radio button is selected */
+input[type="checkbox"]:checked + label {
+    color:goldenrod;         /* Color of the stars when selected */
+}
+.related-title {
+    display: inline-block; /* Inline-block ensures proper centering */
+    position: relative;    /* Allows positioning of the underline */
+    padding-bottom: 5px;   /* Adds spacing between text and the underline */
+}
+
+.related-title::after {
+    content: '';           /* Create the underline */
+    position: absolute;    /* Position relative to the text */
+    bottom: 0;             /* Align to the bottom of the text */
+    left: 50%;             /* Start at the center of the text */
+    width: 50%;            /* Set the width of the underline */
+    height: 4px;           /* Thickness of the underline */
+    background-color: black; /* Color of the underline */
+    transform: translateX(-50%); /* Center the underline */
+    margin: -10px;
+}
+
+
+</style>
+
 <!-- breadcrumb -->
 
 <div style="margin: 50px 0px 20px 80px;">
@@ -43,10 +82,19 @@
                     {% endif %}
                 {% endfor %}
             </p>
+
             
-            <s class="text-secondary" style="font-size:x-large;">&#8377;{{product.price}}</s>
+            <s class="text-secondary" style="font-size:x-large;margin-top: -10px;">&#8377;{{product.price}}</s>
             <p style="color: #ff4141;font-size:x-large;">&#8377;{{product.offerprice}}</p>
-            <p style="font-weight: bold;font-size: large; margin-top: 0px;">Shipping Fee : <span style="font-weight: lighter;">{{product.ShippingFee}}</span>
+            <p style="margin-top:-27px ;">
+                {% if product.stock < 10 %}
+                   <p class="text-danger">ONLY {{ product.stock }} STOCK</p> 
+                {% else %}
+                    <p class="text-success">IN STOCK</p>
+                {% endif %}
+            </p>
+            
+            <p style="font-weight: bold;font-size: large; margin-top: -25px;">Shipping Fee : <span style="font-weight: lighter;">{{product.ShippingFee}}</span>
             <div>
                 <!-- <a href="" class="btn btn-outline-primary text-dark mb-5"> -->
                 <a href="{% url 'addtocart' product.id %}" class="btn text-light d-flex justify-content-center" style="background-color: #ff4141;width: 170px;border-radius: 0px;height: 50px;">
@@ -57,28 +105,28 @@
             <!-- rating and review -->
 
     <!-- Add Review Section -->
-    <h5>Write a Review</h5>
     <form method="post" action="{% url 'add_review' product.id %}">
         {% csrf_token %}
         {{ form.as_p }}
 
         <!-- Star Rating System -->
-        <div>
+        <div class="mt-3">
             <label for="rating">Rating: </label>
-            <input type="radio" id="star1" name="rating" value="1"><label for="star1">☆</label>
-            <input type="radio" id="star2" name="rating" value="2"><label for="star2">☆</label>
-            <input type="radio" id="star3" name="rating" value="3"><label for="star3">☆</label>
-            <input type="radio" id="star4" name="rating" value="4"><label for="star4">☆</label>
-            <input type="radio" id="star5" name="rating" value="5"><label for="star5">☆</label>
+            <input type="checkbox" id="star1" name="rating" value="1"><label for="star1">☆</label>
+            <input type="checkbox" id="star2" name="rating" value="2"><label for="star2">☆</label>
+            <input type="checkbox" id="star3" name="rating" value="3"><label for="star3">☆</label>
+            <input type="checkbox" id="star4" name="rating" value="4"><label for="star4">☆</label>
+            <input type="checkbox" id="star5" name="rating" value="5"><label for="star5">☆</label>
         </div>
 
-        <button type="submit" class="btn btn-primary mt-2">Add Review</button>
+        <button type="submit" class="btn text-light d-flex justify-content-center mt-2" style="background-color: #ff4141;width: 250px;border-radius: 0px;height: 40px;">
+            <b>Add Review And Rating</b></button>
     </form>
 
     <!-- Link to view all reviews -->
-    <div class="mt-4">
-        <a href="{% url 'view_reviews' product.pk %}">View All Reviews</a>
-    </div>
+    <!-- <div class="mt-4">
+        <a href="" style="text-decoration: none;color: black;">See All Reviews And Rating</a>
+    </div> -->
 </div>
         </div>
 
@@ -87,20 +135,31 @@
 
 <div style="margin: 70px;">
     <p style="font-size:20px;font-weight:bolder;border: solid 1px lightgrey;display: inline-block;padding:20px 60px 20px 60px;margin: 0;">Description</p>
+    <p style="font-size:20px;font-weight:bold;border: solid 1px lightgrey;display: inline-block;padding:20px 60px 20px 60px;margin: 0;margin-left: -5px;">
+        <a href="{% url 'view_reviews' product.pk %}" style="text-decoration: none;color: black;">Reviews And Rating</a>
+    </p>
     <p style="font-size:20px;border: solid 1px lightgrey;padding:60px 50px 60px 60px;margin: 0;">{{product.description}}</p>
 </div>
 
 
 <!-- Related Products -->
+<div style="text-align: center;">
+    <h2 class="text-center mt-3 related-title" style="font-weight: 600;">Related Products</h2>
+</div>
+
 <div style="margin: 50px;">
-    <h2 class="text-center mt-5" style="font-weight: 600;">RELATED PRODUCTS</h2>
     <div class="d-flex justify-content-center flex-wrap mt-3" style="gap: 30px;">
         {% for related_product in related_products %}
         <div class="card" style="width: 16rem; border-radius: 0%; margin-top: 10px; margin-bottom: 30px;">
-            <img src="{{ related_product.image.url }}" height="300px" class="card-img-top" alt="{{ related_product.title }}">
+            <img src="{{ related_product.image.url }}" height="250px" class="card-img-top" alt="{{ related_product.title }}">
             
     <div class="card-body">
                 <h6 class="card-title">{{ related_product.title }}</h6>
+                <!-- Display stars based on avg_rating -->
+            <p class="mt-2 mb-1" style="color: goldenrod; font-size:large;">
+                {{ related_product.avg_rating|to:5 }} <!-- Use the custom 'to' filter here -->
+            </p>
+
                 <p class="card-text" style="display: inline; margin-right: 10px;">
                     <b style="font-size: x-large;">&#8377;{{ related_product.offerprice }}</b>
                 </p>

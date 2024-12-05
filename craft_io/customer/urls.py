@@ -39,4 +39,7 @@ urlpatterns = [
     path('add-to-wishlist/<int:product_id>/',add_to_wishlist, name='add_to_wishlist'),
     path('remove-from-wishlist/<int:product_id>/',remove_from_wishlist, name='remove_from_wishlist'),
     path('wishlist/',wishlist_view, name='wishlist_view'),
+    path('placeorder/<int:id>', placeorder, name='placeorder'),
+    path('orderlist', OrderListView.as_view(), name='orderlist'),
+    path('corder/<int:id>', CancelOrder, name='corder'),
 ]

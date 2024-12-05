@@ -52,3 +52,19 @@ class Wishlist(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.product.title}"
+    
+class Orders(models.Model):
+    product=models.ForeignKey(Productss,on_delete=models.CASCADE)
+    user=models.ForeignKey(User,on_delete=models.CASCADE)
+    datatime=models.DateTimeField(auto_now_add=True)
+    quantity=models.IntegerField()
+    options=(
+        ('OrderPlaced','OrderPlaced'),
+        ('Shipped','Shipped'),
+        ('OutForDelivery','OutForDelivery'),
+        ('Delivered','Delivered'),
+        ('cancelled','cancelled')
+    )
+    status=models.CharField(max_length=100,default='OrderPlaced',choices=options)
+    def __str__(self) -> str:
+        return self.product.title

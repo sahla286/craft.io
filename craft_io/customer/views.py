@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from .forms import *
+from django.core.mail import send_mail
 
 
 class ShopView(ListView):
@@ -19,27 +20,41 @@ class ShopView(ListView):
         # Add the latest products (new collections) to the context
         latest_products = Productss.objects.all().order_by('-created_at')[:8]
         context['latest_products'] = latest_products
+
+        for product in context['latest_products']:
+            avg_rating = ProductReview.objects.filter(product=product).aggregate(Avg('rating'))['rating__avg']
+            product.avg_rating = avg_rating if avg_rating is not None else 0
+
+    
+        for product in context['products']:
+            avg_rating = ProductReview.objects.filter(product=product).aggregate(Avg('rating'))['rating__avg']
+            product.avg_rating = avg_rating if avg_rating is not None else 0
+        
         return context
     
 # This view fetches the products for a particular category
 class ProductListView(ListView):
+    model = Productss
     template_name = 'productlist.html'
-    queryset = Productss.objects.all()
     context_object_name = 'products'
 
     def get_queryset(self):
-        # Extract 'cat' from the URL
         cat = self.kwargs.get('cat')
         self.request.session['category'] = cat
-        return self.queryset.filter(category=cat)
+        return Productss.objects.filter(category=cat)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        category = self.kwargs.get('cat')  # Get category from the URL
+        category = self.kwargs.get('cat')
         context['category'] = category
+
+        # Calculate the average rating for each product and add it to the context
+        for product in context['products']:
+            avg_rating = ProductReview.objects.filter(product=product).aggregate(Avg('rating'))['rating__avg']
+            product.avg_rating = avg_rating if avg_rating is not None else 0
         return context
 
-    
+from django.db.models import Avg
 
 class ProductDetailView(DetailView):
     template_name = 'productdetail.html'
@@ -54,7 +69,7 @@ class ProductDetailView(DetailView):
         # Fetch all reviews related to this product
         reviews = product.reviews.all()
 
-        # Calculate the average rating
+        # Calculate the average rating for the current product
         avg_rating = reviews.aggregate(Avg('rating'))['rating__avg']
 
         # Add reviews and average rating to context
@@ -63,7 +78,16 @@ class ProductDetailView(DetailView):
 
         # Fetch related products (exclude the current product)
         related_products = Productss.objects.filter(category=product.category).exclude(id=product.id)[:4]
+        
+        # Calculate average rating for each related product
+        for related_product in related_products:
+            related_reviews = related_product.reviews.all()
+            related_avg_rating = related_reviews.aggregate(Avg('rating'))['rating__avg']
+            related_product.avg_rating = related_avg_rating if related_avg_rating else 0  # Ensure a value even if no reviews exist
+
+        # Add related products to context
         context['related_products'] = related_products
+
         return context
 
 
@@ -219,7 +243,9 @@ def deleteCartItem(request, **kwargs):
 def add_to_wishlist(request, product_id):
     product = Productss.objects.get(id=product_id)
     Wishlist.objects.get_or_create(user=request.user, product=product)
-    return redirect('wishlist_view')
+    # return redirect('wishlist_view')
+    return redirect('shop')
+
 
 @login_required
 def remove_from_wishlist(request, product_id):
@@ -227,7 +253,71 @@ def remove_from_wishlist(request, product_id):
     Wishlist.objects.filter(user=request.user, product=product).delete()
     return redirect('wishlist_view')
 
+
 @login_required
 def wishlist_view(request):
     wishlist_items = Wishlist.objects.filter(user=request.user)
     return render(request, 'wishlist.html', {'wishlist_items': wishlist_items})
+
+
+
+
+
+# Place Order
+def placeorder(request, **kwargs):
+    try:
+        # Fetch the cart ID from the URL parameters
+        cid = kwargs.get('id')
+        if not cid:
+            return redirect('cartlist')
+
+        # Fetch the cart item
+        cart = get_object_or_404(Cart, id=cid)
+
+        # Create an order
+        Orders.objects.create(product=cart.product, user=request.user, quantity=cart.quantity)
+        cart.delete()  # Remove the cart item after placing the order
+
+
+        # Email sending
+        subject = 'Craft.io Order Notification'
+        msg = f'Order for {cart.product.title} is placed!!'
+        from_email = 'tcsahla@gmail.com'
+        to_email = [request.user.email]
+        send_mail(subject, msg, from_email, to_email, fail_silently=True)
+
+        return redirect('cartlist')
+    except Exception as e:
+        return redirect('cartlist')
+
+# Order List
+class OrderListView(ListView):
+    template_name = 'orderlist.html'
+    context_object_name = 'orders'
+
+    def get_queryset(self):
+        # Fetch orders for the logged-in user
+        return Orders.objects.filter(user=self.request.user)
+
+# Cancel Order
+def CancelOrder(request, **kwargs):
+    try:
+        oid = kwargs.get('id')
+        if not oid:
+            return redirect('orderlist')
+
+        # Fetch the order and mark it as cancelled
+        order = get_object_or_404(Orders, id=oid)
+        order.status = 'cancelled'
+        order.save()
+
+# Email sending
+        subject = 'Craft.io Order Notification'
+        msg = f'Order for {order.product.title} is canceled!!'
+        from_email = 'tcsahla@gmail.com'
+        to_email = [request.user.email]
+        send_mail(subject, msg, from_email, to_email, fail_silently=True)
+
+        return redirect('orderlist')
+    except Exception as e:
+        return redirect('orderlist')

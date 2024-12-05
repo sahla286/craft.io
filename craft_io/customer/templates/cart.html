@@ -13,6 +13,7 @@
                 <th>Price</th>
                 <th>Quantity</th>
                 <th>Total</th>
+                <th>Order Place</th>
                 <th>Remove</th>
             </tr>
             
@@ -37,6 +38,9 @@
                     </div>
                 </td>
                 <td>&#8377; {{i.total}}</td>
+                <td><a href="{% url 'placeorder' carts.0.id %}" class="btn text-light d-flex justify-content-center" style="background-color: #ff4141;width: 140px;">
+                    <b class="ms-2">Place Order</b>
+                </a></td>
                 <td>
                     <a href="{% url 'removeitem' i.id %}" class="ms-3"><i class="fa-solid fa-xmark" style="color: #00040a;"></i></a>
                 </td>
