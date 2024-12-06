@@ -242,27 +242,42 @@ def wishlist_view(request):
     return render(request, 'wishlist.html', {'wishlist_items': wishlist_items})
 
 
-def placeorder(request, **kwargs):
+def placeorder(request):
     try:
-        cid = kwargs.get('id')
-        if not cid:
+        # Get all cart items for the logged-in user
+        cart_items = Cart.objects.filter(user=request.user)
+        
+        if not cart_items.exists():
+            print("Cart is empty")  # For debugging
             return redirect('cartlist')
-        cart = get_object_or_404(Cart, id=cid)
-        Orders.objects.create(product=cart.product, user=request.user, quantity=cart.quantity)
-        cart.delete()
 
+        # Process each cart item
+        for cart in cart_items:
+            # Create an order for each cart item
+            Orders.objects.create(
+                product=cart.product, 
+                user=request.user, 
+                quantity=cart.quantity, 
+                total=cart.total
+            )
+            
+            # Send an email for each order
+            subject = 'Craft.io Order Confirmation'
+            msg = f'Your order for {cart.product.title} has been successfully placed!\n' \
+                  f'Quantity: {cart.quantity}\nTotal Price: ₹{cart.total}\n\nThank you for shopping with us!'
 
-        # Email sending
-        subject = 'Craft.io Order Notification'
-        msg = f'Order for {cart.product.title} is placed!!'
-        from_email = 'tcsahla@gmail.com'
-        to_email = [request.user.email]
-        send_mail(subject, msg, from_email, to_email, fail_silently=True)
+            from_email = 'tcsahla@gmail.com'
+            to_email = [request.user.email]
+            send_mail(subject, msg, from_email, to_email, fail_silently=True)
+            
+            # Delete the cart item after creating the order
+            cart.delete()
 
-        return redirect('cartlist')
+        return redirect('orderlist')
+
     except Exception as e:
+        print(f"Error: {e}")  # For debugging purposes
         return redirect('cartlist')
-
 
 class OrderListView(ListView):
     template_name = 'orderlist.html'
