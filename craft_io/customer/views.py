@@ -17,14 +17,12 @@ class ShopView(ListView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Add the latest products (new collections) to the context
         latest_products = Productss.objects.all().order_by('-created_at')[:8]
         context['latest_products'] = latest_products
 
         for product in context['latest_products']:
             avg_rating = ProductReview.objects.filter(product=product).aggregate(Avg('rating'))['rating__avg']
             product.avg_rating = avg_rating if avg_rating is not None else 0
-
     
         for product in context['products']:
             avg_rating = ProductReview.objects.filter(product=product).aggregate(Avg('rating'))['rating__avg']
@@ -32,7 +30,7 @@ class ShopView(ListView):
         
         return context
     
-# This view fetches the products for a particular category
+
 class ProductListView(ListView):
     model = Productss
     template_name = 'productlist.html'
@@ -48,44 +46,36 @@ class ProductListView(ListView):
         category = self.kwargs.get('cat')
         context['category'] = category
 
-        # Calculate the average rating for each product and add it to the context
         for product in context['products']:
             avg_rating = ProductReview.objects.filter(product=product).aggregate(Avg('rating'))['rating__avg']
             product.avg_rating = avg_rating if avg_rating is not None else 0
         return context
 
-from django.db.models import Avg
 
 class ProductDetailView(DetailView):
     template_name = 'productdetail.html'
     queryset = Productss.objects.all()
     context_object_name = 'product'
-    pk_url_kwarg = 'id'  # Ensure the 'id' argument is used to fetch the product.
+    pk_url_kwarg = 'id'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         product = self.get_object()
 
-        # Fetch all reviews related to this product
         reviews = product.reviews.all()
 
-        # Calculate the average rating for the current product
         avg_rating = reviews.aggregate(Avg('rating'))['rating__avg']
 
-        # Add reviews and average rating to context
         context['reviews'] = reviews
-        context['avg_rating'] = avg_rating if avg_rating else 0  # Ensure a value even if no reviews exist
+        context['avg_rating'] = avg_rating if avg_rating else 0 
 
-        # Fetch related products (exclude the current product)
         related_products = Productss.objects.filter(category=product.category).exclude(id=product.id)[:4]
         
-        # Calculate average rating for each related product
         for related_product in related_products:
             related_reviews = related_product.reviews.all()
             related_avg_rating = related_reviews.aggregate(Avg('rating'))['rating__avg']
-            related_product.avg_rating = related_avg_rating if related_avg_rating else 0  # Ensure a value even if no reviews exist
+            related_product.avg_rating = related_avg_rating if related_avg_rating else 0 
 
-        # Add related products to context
         context['related_products'] = related_products
 
         return context
@@ -94,16 +84,15 @@ class ProductDetailView(DetailView):
 def product_detail(request, id):
     product = get_object_or_404(Productss, pk=id)
     
-    # Get the average rating for the product
     avg_rating = ProductReview.objects.filter(product=product).aggregate(Avg('rating'))['rating__avg'] or 0
     
-    form = ProductReviewForm()  # A form to add a new review
+    form = ProductReviewForm() 
     
     return render(request, 'productdetail.html', {
         'product': product,
         'avg_rating': avg_rating,
         'form': form,
-        'category': product.category,  # Ensure category is passed for the breadcrumb
+        'category': product.category, 
     })
 
     
@@ -132,7 +121,6 @@ def add_review(request, id):
 
 @login_required
 def update_review(request, review_id):
-    # Assuming 'review_id' is passed to get the review object
     review = ProductReview.objects.get(id=review_id)
     
     if request.method == 'POST':
@@ -140,7 +128,6 @@ def update_review(request, review_id):
         
         if form.is_valid():
             form.save()
-            # After saving the form, redirect to the 'add_review' URL
             return redirect(reverse('pdetail', kwargs={'id': review.product.id}))
     else:
         form = ProductReviewForm(instance=review)
@@ -188,23 +175,19 @@ class CartListView(ListView):
         context = super().get_context_data(**kwargs)
         carts = self.get_queryset()
         
-        # Calculate subtotal
         subtotal = sum(cart.total for cart in carts)
-        
-        # Calculate total shipping fee
         shipping_fee = sum(
             (int(cart.product.ShippingFee) if cart.product.ShippingFee.isdigit() else 0) * cart.quantity
             for cart in carts
         )
         
-        # Pass calculated values to context
         context['subtotal'] = subtotal
         context['shipping_fee'] = shipping_fee
         context['grand_total'] = subtotal + shipping_fee
         return context
 
 
-# Increase Quantity
+
 def IncreaseQuantity(request, *args, **kwargs):
     try:
         cid = kwargs.get('id')
@@ -215,7 +198,6 @@ def IncreaseQuantity(request, *args, **kwargs):
     except:
         return redirect('cartlist')
 
-# Decrease Quantity
 def decreaseQuantity(request, *args, **kwargs):
     try:
         cid = kwargs.get('id')
@@ -229,7 +211,7 @@ def decreaseQuantity(request, *args, **kwargs):
     except:
         return redirect('cartlist')
 
-# Delete Cart Item
+
 def deleteCartItem(request, **kwargs):
     try:
         cid = kwargs.get('id')
@@ -260,23 +242,14 @@ def wishlist_view(request):
     return render(request, 'wishlist.html', {'wishlist_items': wishlist_items})
 
 
-
-
-
-# Place Order
 def placeorder(request, **kwargs):
     try:
-        # Fetch the cart ID from the URL parameters
         cid = kwargs.get('id')
         if not cid:
             return redirect('cartlist')
-
-        # Fetch the cart item
         cart = get_object_or_404(Cart, id=cid)
-
-        # Create an order
         Orders.objects.create(product=cart.product, user=request.user, quantity=cart.quantity)
-        cart.delete()  # Remove the cart item after placing the order
+        cart.delete()
 
 
         # Email sending
@@ -290,23 +263,20 @@ def placeorder(request, **kwargs):
     except Exception as e:
         return redirect('cartlist')
 
-# Order List
+
 class OrderListView(ListView):
     template_name = 'orderlist.html'
     context_object_name = 'orders'
 
     def get_queryset(self):
-        # Fetch orders for the logged-in user
         return Orders.objects.filter(user=self.request.user)
 
-# Cancel Order
+
 def CancelOrder(request, **kwargs):
     try:
         oid = kwargs.get('id')
         if not oid:
             return redirect('orderlist')
-
-        # Fetch the order and mark it as cancelled
         order = get_object_or_404(Orders, id=oid)
         order.status = 'cancelled'
         order.save()

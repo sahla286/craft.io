@@ -1,46 +1,49 @@
 {% extends 'navbar.html' %}
 {% block nav %}
 
-<!-- <style>
-    input[type="radio"] {
-        display: none;
-    }
+<div style="background-color: #fde1ff; height: 90vh; padding-top: 50px;">
+    <!-- breadcrumb -->
+    <div style="margin: 0px 0px 20px 80px;">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb" style="font-size: larger;">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'shop' %}" style="text-decoration: none;color: rgb(135, 135, 136);">Shop</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'products' product.category %}" style="text-decoration: none;color: rgb(135, 135, 136);">{{ product.category }}</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'pdetail' product.id %}" style="text-decoration: none;color: rgb(135, 135, 136);">{{ product.title }}</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Add Reviews and Rating</li>
+            </ol>
+        </nav>
+    </div>
 
-    label {
-        font-size: 30px;
-        color: lightgray;
-        cursor: pointer;
-    }
+    <div class="d-flex justify-content-center align-items-center mt-5">
+        <div 
+            style="margin: auto; max-width: 600px; background-color: #f9f9f9; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
+            <h4 
+                style="text-align: center; color: #333; font-weight: bold;" 
+                class="mb-4">Write a Review</h4>
+            <form method="post" action="">
+                {% csrf_token %}
+                <div class="mb-3 ms-3 me-3" style="border-radius: 0%;">
+                    Rating: {{ form.rating }}
+                </div>
+                <div class="mb-3 ms-3 me-3" style="border-radius: 0%;">
+                    Comment: {{ form.comment }}
+                </div>
+                <button 
+                    type="submit" 
+                    class="btn text-light d-flex justify-content-center mt-4" 
+                    style="background-color: #ff4141; width: 250px; border-radius: 0px; height: 40px;">
+                    <b>Submit Review And Rating</b>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
 
-    input[type="radio"]:checked ~ label {
-        color: gold;
-    }
 
-    input[type="radio"]:checked ~ label:hover,
-    input[type="radio"]:hover ~ label {
-        color: gold;
-    }
-</style> -->
-
-
-<div style="margin: 70px;">
-    <!-- Rating as stars -->
- <h4>Write a Review</h4>
- <form method="post" action="">
-     {% csrf_token %}
-     {{ form.as_p }}
-     
-     <!-- Star Rating System -->
-     <!-- <div>
-         <label for="rating">Rating: </label>
-         <input type="radio" id="star1" name="rating" value="1"><label for="star1">☆</label>
-         <input type="radio" id="star2" name="rating" value="2"><label for="star2">☆</label>
-         <input type="radio" id="star3" name="rating" value="3"><label for="star3">☆</label>
-         <input type="radio" id="star4" name="rating" value="4"><label for="star4">☆</label>
-         <input type="radio" id="star5" name="rating" value="5"><label for="star5">☆</label>
-     </div> -->
- 
-     <button type="submit" class="btn btn-primary">Submit Review</button>
- </form>
- </div>
 {% endblock %}

@@ -64,14 +64,14 @@
     {% for i in latest_products %}
     <div class="card" style="width: 16rem; border-radius: 0%; margin-top: 50px;">
         <img src="{{i.image.url}}" height="250px" class="card-img-top" alt="...">
-        <!-- Wishlist Button (Heart Icon) -->
+        <!-- whishlist icon -->
         <a href="{% url 'add_to_wishlist' i.id %}" class="mt-2 position-absolute top-0 end-0 m-2 text-danger" style="font-size: 30px; z-index: 10;">
-            <i class="fas fa-heart" style="color: #7d1a06"></i> <!-- Correct class for the heart icon -->
+            <i class="fas fa-heart" style="color: #7d1a06"></i> 
         </a>
         <div class="card-body">
             <h6 class="card-title">{{i.title}}</h6>
             <p class="mt-2 mb-1" style="color: goldenrod; font-size:large;">
-                {{ i.avg_rating|to:5 }} <!-- Use the custom 'to' filter here -->
+                {{ i.avg_rating|to:5 }} 
             </p>
             <p class="card-text" style="display: inline; margin-right: 10px;">
                 <b style="font-size: x-large;">&#8377;{{i.offerprice}}</b>
@@ -99,29 +99,27 @@
 </div>
 
 
-<!-- Product Section -->
+<!-- products-->
 <div class="d-flex justify-content-center flex-wrap mt-5" style="gap: 30px;">
     {% for i in products %}
     <div class="card" style="width: 16rem; border-radius: 0%; margin-top: 50px; position: relative;">
         <img src="{{i.image.url}}" height="250px" class="card-img-top" alt="...">
     
-        <!-- Wishlist Button (Heart Icon) -->
+        <!-- wishlist icon -->
         <a href="{% url 'add_to_wishlist' i.id %}" class="mt-2 position-absolute top-0 end-0 m-2 text-danger" style="font-size: 30px; z-index: 10;">
-            <i class="fas fa-heart" style="color: #7d1a06;"></i> <!-- Correct class for the heart icon -->
+            <i class="fas fa-heart" style="color: #7d1a06;"></i>
         </a>
         
         <div class="card-body">
             <h6 class="card-title">{{i.title}}</h6>
-            <!-- Display stars based on avg_rating -->
             <p class="mt-2 mb-1" style="color: goldenrod; font-size:large;">
-                {{ i.avg_rating|to:5 }} <!-- Use the custom 'to' filter here -->
+                {{ i.avg_rating|to:5 }}
             </p>
 
             <p class="card-text" style="display: inline; margin-right: 10px;">
                 <b style="font-size: x-large;">&#8377;{{i.offerprice}}</b>
             </p>
             <s class="card-text text-secondary">&#8377;{{i.price}}</s>
-            <!-- Product Detail Link -->
             <a href="{% url 'pdetail' i.id %}" class="stretched-link"></a>
         </div>
     </div>
