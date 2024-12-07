@@ -2,38 +2,8 @@ from django.shortcuts import render,redirect
 from .forms import *
 from django.views.generic import FormView,CreateView
 from django.urls import reverse_lazy
-from django.contrib.auth import authenticate, login
-
-# class LoginView(FormView):
-#     template_name = 'login.html'
-#     form_class = LoginForm
-
-#     def post(self, request):
-#         form = LoginForm(data=request.POST)
-#         if form.is_valid():
-#             email = form.cleaned_data.get('email')  # Get the email
-#             pswd = form.cleaned_data.get('password')  # Get the password
-            
-#             try:
-#                 # Get the user by email
-#                 user = User.objects.get(email=email)
-                
-#                 # Authenticate the user
-#                 user = authenticate(request, email=user.email, password=pswd)
-                
-#                 if user is not None:
-#                     login(request, user)
-#                     return redirect('shop')  # Redirect to the shop page on successful login
-#                 else:
-#                     messages.error(request, 'Invalid email or password.')
-#                     return redirect('login')
-#             except User.DoesNotExist:
-#                 messages.error(request, 'User does not exist.')
-#                 return redirect('login')
-
-#         return render(request, 'login.html', {'form': form})
-    
-
+from django.contrib.auth import authenticate, login,logout
+from django.views import View
 
 class LoginView(FormView):
     template_name='login.html'
@@ -64,3 +34,8 @@ class RegistrationView(CreateView):
         return super().form_valid(form)
     def form_invalid(self, form):
         return super().form_invalid(form)
+    
+class LogOutView(View):
+    def get(self,request):
+        logout(request)
+        return redirect('shop')

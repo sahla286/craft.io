@@ -97,11 +97,18 @@
                   
 
                 <form class="d-flex align-items-center">
-                    <!-- <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" style="width: 170px; height: 40px;">
-                    <button class="btn" type="submit" style="height: 40px; background-color: #ff4141; padding: 10px; border: none;">
-                        <i class="fa-solid fa-magnifying-glass" style="color: #f9fafb;"></i>
-                    </button> -->
+                  
+
+
+                    {% if request.user.is_authenticated %}
+                    <!-- Show Logout Button -->
+                    <a href="{% url 'logout' %}" class="btn btn-outline-dark rounded-btn ms-4" style="border-radius: 30px; padding: 10px 30px;">Logout</a>
+                {% else %}
+                    <!-- Show Login Button -->
                     <a href="{% url 'login' %}" class="btn btn-outline-dark rounded-btn ms-4" style="border-radius: 30px; padding: 10px 30px;">Login</a>
+                {% endif %}
+
+
                     <a href="{% url 'cartlist' %}" class="d-flex justify-content-center align-items-center ms-4" style="text-decoration: none;">
                         <i class="fa-solid fa-cart-shopping fa-xl me-5" style="color:black;"></i>
                         <span class="position-absolute top-7 start-90 translate-middle badge rounded-pill" style="background-color:#ff4141;padding: 4px 6px 4px 6px;">
@@ -140,8 +147,60 @@
     </nav>
     <hr>
 
-    {% block nav %}
-    {% endblock nav %}
+<!-- Other content of navbar.html -->
+
+{% block content %}
+{% endblock content %}
+
+<!-- Footer Section -->
+<footer class="text-light bg-dark py-4 mt-5">
+    <div class="container">
+        <h3 style="font-weight: 700; font-family: 'Times New Roman', Times, serif;" class="text-center mb-5">
+            <img src="{% static 'image/logo5.png' %}" alt="" style="height: 40px;">
+            CRAFT.IO
+        </h3>
+      <div class="row">
+        
+        <!-- About Section -->
+        <div class="col-md-4 mb-3">
+          <h5>About Us</h5>
+          <p>We provide quality products to meet your needs. Explore our wide range of items and enjoy seamless shopping.</p>
+        </div>
+  
+        <!-- Quick Links Section -->
+        <div class="col-md-4 mb-3">
+          <h5>Quick Links</h5>
+          <ul class="list-unstyled">
+            <li><a href="{% url 'shop' %}" class="text-light text-decoration-none">Shop</a></li>
+            <li><a href="{% url 'about' %}" class="text-light text-decoration-none">About Us</a></li>
+            <li><a href="{% url 'contact' %}" class="text-light text-decoration-none">Contact Us</a></li>
+            
+          </ul>
+        </div>
+  
+        <!-- Contact Section -->
+        <div class="col-md-4 mb-3">
+          <h5>Contact Us</h5>
+          <p>Email: <a href="mailto:info@example.com" class="text-light text-decoration-none">craft@gmail.com</a></p>
+          <p>Phone: +91 9999999999</p>
+          <div>
+            <a href="https://facebook.com" class="text-light me-2"><i class="fa-brands fa-facebook fa-lg"></i></a>
+            <a href="https://twitter.com" class="text-light me-2"><i class="fa-brands fa-twitter fa-lg"></i></a>
+            <a href="https://instagram.com" class="text-light me-2"><i class="fa-brands fa-instagram fa-lg"></i></a>
+          </div>
+        </div>
+  
+      </div>
+  
+      <hr class="bg-light">
+  
+      <!-- Copyright Section -->
+      <div class="text-center">
+        <p class="mb-0">&copy; 2024 Craft.io. All Rights Reserved.</p>
+      </div>
+    </div>
+</footer>
+
 
     <!-- Bootstrap JS and Popper -->
     <script

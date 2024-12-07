@@ -8,6 +8,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from .forms import *
 from django.core.mail import send_mail
+from django.contrib import messages
 
 
 class ShopView(ListView):
@@ -318,3 +319,30 @@ def searchproduct(request):
         return render(request, 'productlist.html', {'products': products})
     else:
         return redirect('products', cat=cat)
+    
+def contact(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        subject = request.POST.get('subject')
+        message = request.POST.get('message')
+        
+        full_message = f"Message from {name} ({email}):\n\n{message}"
+
+        try:
+            send_mail(
+                subject,
+                full_message,
+                'tcsahla@gmail.com',  # Replace with your email
+                [request.user.email],  # Replace with the recipient's email
+            )
+            messages.success(request, 'Your message has been sent successfully!')
+        except Exception as e:
+            messages.error(request, f"An error occurred: {e}")
+
+        return redirect('contact')  # Redirect to the same page after submission
+
+    return render(request, 'contact.html')
+
+def about(request):
+    return render(request, 'about.html')
