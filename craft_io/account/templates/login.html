@@ -1,7 +1,17 @@
 {% extends 'navbar.html' %}
-{% block nav %}
+{% block content %}
         <div class="d-flex justify-content-center align-items-center" style="height: 90vh;background-color: #fde1ff">
+            
             <div class="p-3 row" style="height: 400px;width: 500px;background-color: white;border-radius: 0px;">
+                {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="alert alert-danger">
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        {{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
                     <h3 class="mt-5 ms-3 me-3" style="font-weight:600;">Login</h3>
                     <form action="" method="post">
                         {% csrf_token %}
@@ -28,4 +38,4 @@
                 
             </div>
         </div>
-        {% endblock nav %}
+        {% endblock content %}

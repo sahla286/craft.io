@@ -9,6 +9,20 @@ from django.urls import reverse
 from .forms import *
 from django.core.mail import send_mail
 from django.contrib import messages
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import never_cache
+
+
+def signin_required(fn):
+    def inner(request, *args, **kw):
+        if request.user.is_authenticated:
+            return fn(request, *args, **kw)
+        else:
+            messages.error(request, 'Please login First!!')
+            return redirect('login')
+    return inner
+
+decorators = [signin_required, never_cache]
 
 
 class ShopView(ListView):
@@ -96,7 +110,7 @@ def product_detail(request, id):
         'category': product.category, 
     })
 
-    
+@signin_required
 def view_reviews(request, pk):
     product = get_object_or_404(Productss, pk=pk)
     reviews = ProductReview.objects.filter(product=product)
@@ -105,7 +119,7 @@ def view_reviews(request, pk):
         'reviews': reviews
     })
 
-@login_required
+@signin_required
 def add_review(request, id):
     product = get_object_or_404(Productss, id=id)
     if request.method == 'POST':
@@ -120,7 +134,7 @@ def add_review(request, id):
         form = ProductReviewForm()
     return render(request, 'add_review.html', {'form': form, 'product': product})
 
-@login_required
+@signin_required
 def update_review(request, review_id):
     review = ProductReview.objects.get(id=review_id)
     
@@ -136,8 +150,7 @@ def update_review(request, review_id):
     return render(request, 'add_review.html', {'form': form, 'review': review})
 
 
-
-@login_required
+@signin_required
 def delete_review(request, id):
     review = get_object_or_404(ProductReview, id=id, user=request.user)
     product_id = review.product.id
@@ -146,7 +159,7 @@ def delete_review(request, id):
         return redirect('pdetail', id=product_id)
     return render(request, 'add_review.html', {'review': review})
 
-
+@signin_required
 def addToCart(request,*args,**kwargs):
     try:
         pid=kwargs.get('id')
@@ -165,6 +178,7 @@ def addToCart(request,*args,**kwargs):
         print(f"Error in addToCart: {e}")
         return redirect('cartlist')
     
+@method_decorator(decorator=decorators, name='dispatch')
 class CartListView(ListView):
     template_name = 'cart.html'
     queryset=Cart.objects.all()
@@ -199,6 +213,7 @@ def IncreaseQuantity(request, *args, **kwargs):
     except:
         return redirect('cartlist')
 
+
 def decreaseQuantity(request, *args, **kwargs):
     try:
         cid = kwargs.get('id')
@@ -222,7 +237,7 @@ def deleteCartItem(request, **kwargs):
     except:
         return redirect('cartlist')
     
-@login_required
+@signin_required
 def add_to_wishlist(request, product_id):
     product = Productss.objects.get(id=product_id)
     Wishlist.objects.get_or_create(user=request.user, product=product)
@@ -230,19 +245,19 @@ def add_to_wishlist(request, product_id):
     return redirect('shop')
 
 
-@login_required
+
 def remove_from_wishlist(request, product_id):
     product = Productss.objects.get(id=product_id)
     Wishlist.objects.filter(user=request.user, product=product).delete()
     return redirect('wishlist_view')
 
 
-@login_required
+@signin_required
 def wishlist_view(request):
     wishlist_items = Wishlist.objects.filter(user=request.user)
     return render(request, 'wishlist.html', {'wishlist_items': wishlist_items})
 
-
+@signin_required
 def placeorder(request):
     try:
         # Get all cart items for the logged-in user
@@ -280,6 +295,7 @@ def placeorder(request):
         print(f"Error: {e}")  # For debugging purposes
         return redirect('cartlist')
 
+@method_decorator(decorator=decorators, name='dispatch')
 class OrderListView(ListView):
     template_name = 'orderlist.html'
     context_object_name = 'orders'
@@ -287,7 +303,7 @@ class OrderListView(ListView):
     def get_queryset(self):
         return Orders.objects.filter(user=self.request.user)
 
-
+@signin_required
 def CancelOrder(request, **kwargs):
     try:
         oid = kwargs.get('id')
