@@ -15,6 +15,20 @@
         box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2);
     }
 </style>
+
+
+<!-- search -->
+
+<div class=" d-flex justify-content-center mb-4 mt-3">
+    <form action="{% url 'search' %}" method="post" class="d-flex">
+      {% csrf_token %}
+  <input class="form-control me-2" type="search" placeholder="Search for products" name="searchkey" aria-label="Search" style="width: 300px; height: 40px;">
+  <button class="btn" type="submit" style="height: 40px; background-color: #ff4141; padding: 10px; border: none;">
+      <i class="fa-solid fa-magnifying-glass" style="color: #f9fafb;"></i>
+  </button>
+</form>
+</div>
+
 <!-- banner -->
 <div class="mt-4">
     {% if category == 'PaperCraft' %}

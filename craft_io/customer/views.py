@@ -306,3 +306,15 @@ def CancelOrder(request, **kwargs):
         return redirect('orderlist')
     except Exception as e:
         return redirect('orderlist')
+
+
+
+# Search Product
+def searchproduct(request):
+    keyword = request.POST.get('searchkey', '')
+    cat = request.session.get('category', '')
+    if keyword:
+        products = Productss.objects.filter(title__icontains=keyword, category=cat)
+        return render(request, 'productlist.html', {'products': products})
+    else:
+        return redirect('products', cat=cat)
