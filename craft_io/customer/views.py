@@ -11,6 +11,8 @@ from django.core.mail import send_mail
 from django.contrib import messages
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
+from django.core.mail import EmailMultiAlternatives
+from django.utils.html import format_html
 
 
 def signin_required(fn):
@@ -262,34 +264,50 @@ def placeorder(request):
     try:
         # Get all cart items for the logged-in user
         cart_items = Cart.objects.filter(user=request.user)
-        
+
         if not cart_items.exists():
             print("Cart is empty")  # For debugging
             return redirect('cartlist')
 
         # Process each cart item
         for cart in cart_items:
-            # Create an order for each cart item
+            # Create an order for each cart item (let Django auto-generate the id)
             Orders.objects.create(
-                product=cart.product, 
-                user=request.user, 
-                quantity=cart.quantity, 
-                total=cart.total
+                product=cart.product,
+                user=request.user,
+                quantity=cart.quantity,
+                total=cart.total,
             )
-            
-            # Send an email for each order
-            subject = 'Craft.io Order Confirmation'
-            msg = f'Your order for {cart.product.title} has been successfully placed!\n' \
-                  f'Quantity: {cart.quantity}\nTotal Price: ₹{cart.total}\n\nThank you for shopping with us!'
 
-            from_email = 'tcsahla@gmail.com'
-            to_email = [request.user.email]
-            send_mail(subject, msg, from_email, to_email, fail_silently=True)
-            
-            # Delete the cart item after creating the order
+            # Optionally, you can clear the cart item after creating the order
             cart.delete()
 
-        return redirect('orderlist')
+            # Email subject and message
+            subject = 'Craft.io Order Confirmation'
+            html_content = format_html(
+                f"""
+                <p>Hi <strong>{request.user.username}</strong>,</p>
+                <p>Your order has been successfully placed.</p>
+                <p>
+                    <strong>Product:</strong> {cart.product.title} <br>
+                    <strong>Quantity:</strong> {cart.quantity} <br>
+                    <strong>Total Price:</strong> ₹{cart.total}
+                </p>
+                <p>Thank you for shopping with us!</p>
+                """
+            )
+
+            # Send confirmation email
+            email = EmailMultiAlternatives(subject, '', to=[request.user.email])
+            email.attach_alternative(html_content, "text/html")
+            email.send()
+
+        return redirect('cartlist')
+
+    except Exception as e:
+        print(f"Error in placeorder: {e}")
+        return redirect('cartlist')
+
 
     except Exception as e:
         print(f"Error: {e}")  # For debugging purposes

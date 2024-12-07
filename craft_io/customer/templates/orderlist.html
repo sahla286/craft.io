@@ -9,6 +9,7 @@
         <table class="table mt-5">
             <thead>
                 <tr>
+                    <th>ID</th>
                     <th>Products</th>
                     <th>Title</th>
                     <th>Quantity</th>
@@ -21,6 +22,7 @@
             <tbody>
                 {% for i in orders %}
                 <tr class="align-middle">
+                    <td>{{ i.product.id }}</td>
                     <td>
                         <a href="{% url 'pdetail' i.product.id %}">
                             <img src="{{ i.product.image.url }}" alt="{{ i.product.title }}" class="img-fluid" height="50px" width="50px">

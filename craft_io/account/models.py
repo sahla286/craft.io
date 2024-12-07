@@ -2,8 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 
-
-
 # Create your models here.
 
 class Productss(models.Model):
@@ -60,7 +58,6 @@ class Orders(models.Model):
     datatime = models.DateTimeField(auto_now_add=True)
     quantity = models.IntegerField()  # Change this to IntegerField
     total = models.IntegerField() 
-    
     options = (
         ('OrderPlaced', 'OrderPlaced'),
         ('Shipped', 'Shipped'),
