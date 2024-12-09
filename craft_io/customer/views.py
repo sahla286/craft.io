@@ -4,7 +4,6 @@ from account.models import *
 from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
 from django.urls import reverse
 from .forms import *
 from django.core.mail import send_mail
@@ -56,17 +55,28 @@ class ProductListView(ListView):
     def get_queryset(self):
         cat = self.kwargs.get('cat')
         self.request.session['category'] = cat
-        return Productss.objects.filter(category=cat)
+        
+        sort_option = self.request.GET.get('sortby')
+        queryset = Productss.objects.filter(category=cat)
+        if sort_option == 'price_asc':
+            queryset = queryset.order_by('offerprice')
+        elif sort_option == 'price_desc':
+            queryset = queryset.order_by('-offerprice')
+        elif sort_option == 'newest':
+            queryset = queryset.order_by('-created_at')
+        
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         category = self.kwargs.get('cat')
         context['category'] = category
-
         for product in context['products']:
             avg_rating = ProductReview.objects.filter(product=product).aggregate(Avg('rating'))['rating__avg']
             product.avg_rating = avg_rating if avg_rating is not None else 0
+        context['sortby'] = self.request.GET.get('sortby', '')
         return context
+
 
 
 class ProductDetailView(DetailView):
@@ -136,10 +146,15 @@ def add_review(request, id):
         form = ProductReviewForm()
     return render(request, 'add_review.html', {'form': form, 'product': product})
 
-@signin_required
+@login_required
 def update_review(request, review_id):
-    review = ProductReview.objects.get(id=review_id)
-    
+    review = get_object_or_404(ProductReview, id=review_id)
+
+    # Ensure the product's category exists before rendering the template
+    if not review.product.category:
+        # Redirect to a fallback page if the category is missing
+        return redirect('shop')
+
     if request.method == 'POST':
         form = ProductReviewForm(request.POST, instance=review)
         
@@ -262,33 +277,25 @@ def wishlist_view(request):
 @signin_required
 def placeorder(request):
     try:
-        # Get all cart items for the logged-in user
         cart_items = Cart.objects.filter(user=request.user)
 
         if not cart_items.exists():
-            print("Cart is empty")  # For debugging
             return redirect('cartlist')
-
-        # Process each cart item
         for cart in cart_items:
-            # Create an order for each cart item (let Django auto-generate the id)
             Orders.objects.create(
                 product=cart.product,
                 user=request.user,
                 quantity=cart.quantity,
                 total=cart.total,
             )
-
-            # Optionally, you can clear the cart item after creating the order
             cart.delete()
-
-            # Email subject and message
             subject = 'Craft.io Order Confirmation'
             html_content = format_html(
                 f"""
                 <p>Hi <strong>{request.user.username}</strong>,</p>
                 <p>Your order has been successfully placed.</p>
                 <p>
+                   
                     <strong>Product:</strong> {cart.product.title} <br>
                     <strong>Quantity:</strong> {cart.quantity} <br>
                     <strong>Total Price:</strong> ₹{cart.total}
@@ -296,21 +303,15 @@ def placeorder(request):
                 <p>Thank you for shopping with us!</p>
                 """
             )
-
-            # Send confirmation email
             email = EmailMultiAlternatives(subject, '', to=[request.user.email])
             email.attach_alternative(html_content, "text/html")
             email.send()
 
-        return redirect('cartlist')
+        messages.success(request, 'Your order has been successfully placed! Thank you for shopping with us!')
+        return redirect('orderlist')
 
     except Exception as e:
-        print(f"Error in placeorder: {e}")
-        return redirect('cartlist')
-
-
-    except Exception as e:
-        print(f"Error: {e}")  # For debugging purposes
+        messages.error(request, f"An error occurred: {e}")
         return redirect('cartlist')
 
 @method_decorator(decorator=decorators, name='dispatch')
@@ -380,3 +381,49 @@ def contact(request):
 
 def about(request):
     return render(request, 'about.html')
+
+
+
+@login_required
+def add_delivery_address(request):
+    if request.method == 'POST':
+        form = DeliveryAddressForm(request.POST)
+        if form.is_valid():
+            address = form.save(commit=False)
+            address.user = request.user
+            address.save()
+            return redirect('placeorder') 
+    else:
+        form = DeliveryAddressForm()
+
+    return render(request, 'delivery_address_form.html', {'form': form})
+
+
+# @login_required
+# def edit_delivery_address(request, address_id):
+#     address = DeliveryAddress.objects.get(id=address_id, user=request.user)
+    
+#     if request.method == 'POST':
+#         form = DeliveryAddressForm(request.POST, instance=address)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('placeorder')
+
+#     else:
+#         form = DeliveryAddressForm(instance=address)
+
+#     return render(request, 'delivery_address_form.html', {'form': form})
+
+
+# @login_required
+# def order_summary(request):
+#     # Check if the user has a delivery address
+#     address = DeliveryAddress.objects.filter(user=request.user).first()
+#     if not address:
+#         return redirect('add_delivery_address')  # Redirect to the add address page if no address exists
+
+#     # If the address exists, render the order summary
+#     return render(request, 'order_summary.html', {'address': address})
+
+
+

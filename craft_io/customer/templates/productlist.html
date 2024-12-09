@@ -40,8 +40,24 @@
     {% endif %}
 </div>
 
+
+
+
+<div class="d-flex justify-content-end align-items-center mt-5" style="margin-right: 70px;">
+    <form method="get" class="d-flex align-items-center">
+        <select name="sortby" id="sortby" class="form-select" style="width: 175px;border-radius: 30px;" onchange="this.form.submit()">
+            <option value="">Sort By:</option>
+            <option value="price_asc" {% if request.GET.sortby == 'price_asc' %}selected{% endif %}>Price:Low to High</option>
+            <option value="price_desc" {% if request.GET.sortby == 'price_desc' %}selected{% endif %}>Price:High to Low</option>
+            <option value="newest" {% if sortby == 'newest' %}selected{% endif %}>New Arrivels</option>
+        </select>
+    </form>
+</div>
+
+
+
 <!-- product list -->
-<div class="d-flex justify-content-center flex-wrap mt-5" style="gap: 30px;">
+<div class="d-flex justify-content-center flex-wrap mt-2" style="gap: 30px;">
     {% for product in products %}
     <div class="card" style="width: 16rem; border-radius: 0%; margin-top: 10px;margin-bottom: 30px;">
         <img src="{{ product.image.url }}" height="250px" class="card-img-top" alt="...">

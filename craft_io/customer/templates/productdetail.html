@@ -49,7 +49,6 @@ input[type="checkbox"]:checked + label {
         <li class="breadcrumb-item"><a href="{% url 'shop' %}" style="text-decoration: none;color: rgb(135, 135, 136);">Shop</a></li>
         <li class="breadcrumb-item">
             <a href="{% url 'products' product.category %}" style="text-decoration: none;color: rgb(135, 135, 136);">{{ product.category }}</a>
-
         </li>
         <li class="breadcrumb-item active" aria-current="page">{{ product.title }}</li>
     </ol>
@@ -123,11 +122,6 @@ input[type="checkbox"]:checked + label {
         <button type="submit" class="btn text-light d-flex justify-content-center mt-2" style="background-color: #ff4141;width: 250px;border-radius: 0px;height: 40px;">
             <b>Add Review And Rating</b></button>
     </form>
-
-    <!-- Link to view all reviews -->
-    <!-- <div class="mt-4">
-        <a href="" style="text-decoration: none;color: black;">See All Reviews And Rating</a>
-    </div> -->
 </div>
         </div>
 
@@ -156,7 +150,6 @@ input[type="checkbox"]:checked + label {
             
     <div class="card-body">
                 <h6 class="card-title">{{ related_product.title }}</h6>
-                <!-- Display stars based on avg_rating -->
             <p class="mt-2 mb-1" style="color: goldenrod; font-size:large;">
                 {{ related_product.avg_rating|to:5 }} 
             </p>

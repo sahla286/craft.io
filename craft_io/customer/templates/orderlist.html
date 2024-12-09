@@ -1,10 +1,19 @@
 {% extends 'navbar.html' %}
 {% block content %}
 
-<h2 class="text-center my-3">Order List ({{ orders.count }})</h2>  <!-- Display the count of orders -->
-
+<h2 class="text-center my-3">Order List ({{ orders.count }})</h2> 
+{% if messages %}
+{% for i in messages %}
+{% if i.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+<div class="alert alert-success alert-dismissible fade show mt-5">
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    <strong>{{i}}</strong>
+</div>
+{% endif %}
+{% endfor %}
+{% endif %}
 {% if orders %}
-<div class="container mt-5">
+<div class="container mt-5 mb-5">
     <div class="table-container" style="width: 97%; margin: 0 auto;">
         <table class="table mt-5">
             <thead>
@@ -22,7 +31,7 @@
             <tbody>
                 {% for i in orders %}
                 <tr class="align-middle">
-                    <td>{{ i.product.id }}</td>
+                    <td>{{ i.id }}</td>
                     <td>
                         <a href="{% url 'pdetail' i.product.id %}">
                             <img src="{{ i.product.image.url }}" alt="{{ i.product.title }}" class="img-fluid" height="50px" width="50px">
@@ -33,7 +42,6 @@
                     <td>&#8377; {{ i.total }}</td>
                     <td>{{ i.datatime }}</td>
                     <td>
-                        <!-- Display status with appropriate styling -->
                         {% if i.status == 'OrderPlaced' %}
                         <span class="text-warning">{{ i.status }}</span>
                         {% elif i.status == 'Shipped' %}
@@ -47,7 +55,6 @@
                         {% endif %}
                     </td>
                     <td>
-                        <!-- Add actions for cancelling order, if applicable -->
                         {% if i.status == 'OrderPlaced' %}
                         <a href="{% url 'corder' i.id %}" onclick="return confirm('Are you sure?')" class="btn btn-outline-danger">Cancel Order</a>
                         {% endif %}

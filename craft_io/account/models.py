@@ -53,6 +53,7 @@ class Wishlist(models.Model):
     
 
 class Orders(models.Model):
+    id = models.IntegerField(primary_key=True)
     product = models.ForeignKey(Productss, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     datatime = models.DateTimeField(auto_now_add=True)
@@ -69,3 +70,18 @@ class Orders(models.Model):
 
     def __str__(self) -> str:
         return f"Order by {self.user.username} for {self.product} on {self.datatime.strftime('%Y-%m-%d %H:%M:%S')}"
+
+class DeliveryAddress(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+    phone_number = models.CharField(max_length=15)
+    pincode = models.CharField(max_length=6)
+    locality = models.CharField(max_length=255)
+    address = models.TextField()
+    district = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    address_type = models.CharField(max_length=50, choices=[('home', 'Home (All Day Delivery)'), ('work', 'Work (Delivery between 10AM - 5PM)')], default='home')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.name} - {self.address} - {self.address_type}"

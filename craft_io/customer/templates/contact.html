@@ -5,7 +5,7 @@
         <h2 class="text-center my-3">Contact Us</h2> 
 
         <div class="row" style="margin: 30px;height: 500px;">
-            <!-- Contact Form Section -->
+           
             <div class="col-md-6" >
                 <p class="mb-3" style="color: #ff4141;">SEND US A MESSAGE</p>
                 <p style="width: 500px;">We'd love to hear from you! Please fill out the form below, and we'll get back to you soon.</p>
@@ -36,17 +36,9 @@
                         Send Message
                     </button>
                 </form>
-
-                {% if messages %}
-                    <div class="mt-4">
-                        {% for message in messages %}
-                            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-                        {% endfor %}
-                    </div>
-                {% endif %}
             </div>
 
-            <!-- Contact Information Section -->
+           
             <div class="col-md-6 " style="margin-top: 50px;">
                 <p style="color: #ff4141;">OUR LOCATION</p>
                 <p>
@@ -60,7 +52,7 @@
                 <p>+91 9999999999</p>
 
                 <p style="color: #ff4141;">Email</p>
-                <a href="craft@gmail.com" style="text-decoration: none;color: black;">craft@gmail.com</a><br><br>
+                <a href="mailto:craft@gmail.com" style="text-decoration: none;color: black;">craft@gmail.com</a><br><br>
                 <p>We’d love to help you with an order, for general customer service enquiries or product questions. The best time to reach us is Mon - Sat 9:00 am - 6:00 pm.</p> <br> <br>
                 <div class="d-flex justify-content-center">
                     <a href="https://facebook.com" class="text-dark me-2"><i class="fa-brands fa-facebook fa-2xl"></i></a>

@@ -10,25 +10,3 @@ def item_count(request):
         return {"cart":0,'wishlist':0,"order":0}
     
 
-    # your_app/context_processors.py
-
-
-# from django.db.models import Avg, Count
-
-# def product_review_data(request):
-#     products = ProductReview.objects.all()
-    
-#     product_review_info = {}
-    
-#     for product in products:
-#         total_reviews = product.reviews.count()  # Get total reviews
-#         avg_rating = product.reviews.aggregate(Avg('rating'))['rating__avg']  # Get average rating
-        
-#         product_review_info[product.id] = {
-#             'total_reviews': total_reviews,
-#             'avg_rating': round(avg_rating, 1) if avg_rating else 0  # Return average rating rounded to 1 decimal
-#         }
-
-#     return {
-#         'product_review_info': product_review_info
-#     }
