@@ -13,6 +13,7 @@ urlpatterns = [
     path('review/<int:review_id>/update/', update_review, name='update_review'),
     path('product/<int:pk>/reviews/', view_reviews, name='view_reviews'),
     path('review/<int:id>/delete/', delete_review, name='delete_review'),
+    path('reviews/<int:pk>/',view_reviews, name='view_reviews'),
     path('add-to-wishlist/<int:product_id>/',add_to_wishlist, name='add_to_wishlist'),
     path('remove-from-wishlist/<int:product_id>/',remove_from_wishlist, name='remove_from_wishlist'),
     path('wishlist/',wishlist_view, name='wishlist_view'),

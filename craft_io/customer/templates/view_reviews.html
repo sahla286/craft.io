@@ -49,7 +49,22 @@
                     </form>
                 </div>
                 {% endif %}
+                {% if request.user.is_superuser %}
+                    <div class="col-md-2">
+                        <!-- Delete Review Form -->
+                        <form method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="delete_review" value="{{ review.id }}">
+                            <button type="submit" style="background: none; border: none; padding-left: 50px;">
+                                <i class="fa-solid fa-trash" style="color: #bb180c;"></i>
+                            </button>
+                        </form>
+                    </div>
+                {% endif %}
             </div>
+
+    
+            
             <hr>
         {% empty %}
             <p>No reviews yet.</p>

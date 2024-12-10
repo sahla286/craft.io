@@ -122,13 +122,44 @@ def product_detail(request, id):
         'category': product.category, 
     })
 
-@signin_required
+@login_required
 def view_reviews(request, pk):
     product = get_object_or_404(Productss, pk=pk)
     reviews = ProductReview.objects.filter(product=product)
+    # reply_form = ReviewReplyForm()
+
+    if request.method == 'POST':
+        # Handle review deletion
+        if 'delete_review' in request.POST:
+            review_id = request.POST.get('delete_review')
+            review = get_object_or_404(ProductReview, id=review_id)
+            if request.user.is_superuser:
+                review.delete()
+                return redirect('view_reviews', pk=pk)
+
+        # Handle replying to a review
+        # if 'reply_to_review' in request.POST:
+        #     review_id = request.POST.get('reply_to_review')
+        #     review = get_object_or_404(ProductReview, id=review_id)
+            
+        #     # Check if a reply already exists for this review
+        #     existing_reply = ReviewReply.objects.filter(review=review).first()
+        #     if existing_reply:
+        #         messages.error(request, "A reply already exists for this review.")
+        #         return redirect('view_reviews', pk=pk)
+
+            # reply_form = ReviewReplyForm(request.POST)
+            # if reply_form.is_valid() and request.user.is_superuser:
+            #     reply = reply_form.save(commit=False)
+            #     reply.review = review
+            #     reply.admin = request.user
+            #     reply.save()
+            #     return redirect('view_reviews', pk=pk)
+
     return render(request, 'view_reviews.html', {
         'product': product,
-        'reviews': reviews
+        'reviews': reviews,
+        # 'reply_form': reply_form,
     })
 
 
@@ -160,23 +191,6 @@ def add_review(request, id):
     
     return render(request, 'add_review.html', {'form': form, 'product': product})
 
-
-
-
-# @signin_required
-# def add_review(request, id):
-#     product = get_object_or_404(Productss, id=id)
-#     if request.method == 'POST':
-#         form = ProductReviewForm(request.POST)
-#         if form.is_valid():
-#             review = form.save(commit=False)
-#             review.user = request.user
-#             review.product = product
-#             review.save()
-#             return redirect('pdetail', id=product.id)
-#     else:
-#         form = ProductReviewForm()
-#     return render(request, 'add_review.html', {'form': form, 'product': product})
 
 @login_required
 def update_review(request, review_id):
@@ -292,9 +306,7 @@ def deleteCartItem(request, **kwargs):
 def add_to_wishlist(request, product_id):
     product = Productss.objects.get(id=product_id)
     Wishlist.objects.get_or_create(user=request.user, product=product)
-    # return redirect('wishlist_view')
     return redirect('shop')
-
 
 
 def remove_from_wishlist(request, product_id):
@@ -315,21 +327,36 @@ def placeorder(request):
 
         if not cart_items.exists():
             return redirect('cartlist')
+
         for cart in cart_items:
-            Orders.objects.create(
-                product=cart.product,
-                user=request.user,
-                quantity=cart.quantity,
-                total=cart.total,
-            )
+            product = cart.product
+            # Check if the product is in stock
+            if product.stock > 0:
+                # Decrease the stock by the quantity ordered
+                product.stock -= cart.quantity
+                product.save()
+
+                # Create the order
+                Orders.objects.create(
+                    product=cart.product,
+                    user=request.user,
+                    quantity=cart.quantity,
+                    total=cart.total,
+                )
+            else:
+                messages.error(request, f"Sorry, {cart.product.title} is out of stock!")
+                return redirect('cartlist')
+
+            # Delete the cart item after placing the order
             cart.delete()
+
+            # Send confirmation email
             subject = 'Craft.io Order Confirmation'
             html_content = format_html(
                 f"""
                 <p>Hi <strong>{request.user.username}</strong>,</p>
                 <p>Your order has been successfully placed.</p>
                 <p>
-                   
                     <strong>Product:</strong> {cart.product.title} <br>
                     <strong>Quantity:</strong> {cart.quantity} <br>
                     <strong>Total Price:</strong> ₹{cart.total}
@@ -345,8 +372,8 @@ def placeorder(request):
         return redirect('orderlist')
 
     except Exception as e:
-        messages.error(request, f"An error occurred: {e}")
         return redirect('cartlist')
+
 
 @method_decorator(decorator=decorators, name='dispatch')
 class OrderListView(ListView):
@@ -362,20 +389,28 @@ def CancelOrder(request, **kwargs):
         oid = kwargs.get('id')
         if not oid:
             return redirect('orderlist')
+
         order = get_object_or_404(Orders, id=oid)
-        order.status = 'cancelled'
-        order.save()
 
-# Email sending
-        subject = 'Craft.io Order Notification'
-        msg = f'Order for {order.product.title} is canceled!!'
-        from_email = 'tcsahla@gmail.com'
-        to_email = [request.user.email]
-        send_mail(subject, msg, from_email, to_email, fail_silently=True)
+        # Check if the order can be canceled
+        if order.status == 'Delivered':
+            messages.error(request, "Delivered orders cannot be canceled.")
+            return redirect('orderlist')
 
+        # Increase the product's stock by the quantity of the canceled order
+        product = order.product
+        product.stock += order.quantity
+        product.save()
+
+        # Delete the order
+        order.delete()
+
+        messages.success(request, 'Your order has been canceled.')
         return redirect('orderlist')
+
     except Exception as e:
         return redirect('orderlist')
+
 
 
 
@@ -402,8 +437,8 @@ def contact(request):
             send_mail(
                 subject,
                 full_message,
-                'tcsahla@gmail.com',  # Replace with your email
-                [request.user.email],  # Replace with the recipient's email
+                'tcsahla@gmail.com',
+                [request.user.email],
             )
             messages.success(request, 'Your message has been sent successfully!')
         except Exception as e:

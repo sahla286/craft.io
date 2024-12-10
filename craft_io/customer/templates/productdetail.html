@@ -85,15 +85,18 @@ input[type="checkbox"]:checked + label {
             
             <s class="text-secondary" style="font-size:x-large;margin-top: -10px;">&#8377;{{product.price}}</s>
             <p style="color: #ff4141;font-size:x-large;">&#8377;{{product.offerprice}}</p>
-            <p style="margin-top:-27px ;">
-                {% if product.stock < 10 %}
-                   <p class="text-danger">ONLY {{ product.stock }} STOCK</p> 
+            <h5 class="mt-1">
+                {% if product.stock == 0 %}
+                    <h5 class="text-danger">OUT OF STOCK</h5>
+                {% elif product.stock < 10 %}
+                    <h5 class="text-warning">ONLY {{ product.stock }} LEFT IN STOCK</h5>
                 {% else %}
-                    <p class="text-success">IN STOCK</p>
+                    <h5 class="text-success">IN STOCK</h5>
                 {% endif %}
-            </p>
+            </h5>
             
-            <p style="font-weight: bold;font-size: large; margin-top: -25px;">Shipping Fee : <span style="font-weight: lighter;">{{product.ShippingFee}}</span>
+            
+            <p style="font-weight: bold;font-size: large;" class="mt-1">Shipping Fee : <span style="font-weight: lighter;">{{product.ShippingFee}}</span>
             <div>
                 <!-- <a href="" class="btn btn-outline-primary text-dark mb-5"> -->
                 <a href="{% url 'addtocart' product.id %}" class="btn text-light d-flex justify-content-center" style="background-color: #ff4141;width: 170px;border-radius: 0px;height: 50px;">

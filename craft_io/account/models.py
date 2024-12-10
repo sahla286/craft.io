@@ -43,7 +43,17 @@ class ProductReview(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.product.title} - {self.rating}"
+    
 
+class ReviewReply(models.Model):
+    review = models.OneToOneField(ProductReview, on_delete=models.CASCADE, related_name='reply')
+    admin = models.ForeignKey(User, on_delete=models.CASCADE)
+    reply_text = models.TextField(max_length=500)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Reply to {self.review.user.username}'s review"
+    
 class Wishlist(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.ForeignKey(Productss, on_delete=models.CASCADE)
@@ -85,3 +95,5 @@ class DeliveryAddress(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.address} - {self.address_type}"
+    
+

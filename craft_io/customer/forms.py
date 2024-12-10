@@ -1,5 +1,5 @@
 from django import forms
-from account.models import ProductReview,DeliveryAddress
+from account.models import *
 
 class ProductReviewForm(forms.ModelForm):
     class Meta:
@@ -9,6 +9,14 @@ class ProductReviewForm(forms.ModelForm):
             'rating': forms.NumberInput(attrs={'min': 1, 'max': 5, 'step': 1}),
             'comment': forms.Textarea(attrs={'rows': 4, 'cols': 50}),
         }
+
+# class ReviewReplyForm(forms.ModelForm):
+#     class Meta:
+#         model = ReviewReply
+#         fields = ['reply_text']
+#         widgets = {
+#             'reply_text': forms.Textarea(attrs={'rows': 3, 'cols': 50}),
+#         }
 
 class DeliveryAddressForm(forms.ModelForm):
     class Meta:
@@ -54,3 +62,6 @@ class DeliveryAddressForm(forms.ModelForm):
                 'class': 'form-check-input',
             }),
         }
+
+
+
