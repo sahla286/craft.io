@@ -131,9 +131,21 @@ def view_reviews(request, pk):
         'reviews': reviews
     })
 
+
+
 @signin_required
 def add_review(request, id):
     product = get_object_or_404(Productss, id=id)
+    has_delivered_order = Orders.objects.filter(
+        user=request.user,
+        product=product,
+        status='Delivered'
+    ).exists()
+    
+    if not has_delivered_order:
+        messages.error(request, "You can only review products you have bought and received.")
+        return redirect('pdetail', id=product.id)
+    
     if request.method == 'POST':
         form = ProductReviewForm(request.POST)
         if form.is_valid():
@@ -141,10 +153,30 @@ def add_review(request, id):
             review.user = request.user
             review.product = product
             review.save()
+            messages.success(request, "Your review has been added successfully!")
             return redirect('pdetail', id=product.id)
     else:
         form = ProductReviewForm()
+    
     return render(request, 'add_review.html', {'form': form, 'product': product})
+
+
+
+
+# @signin_required
+# def add_review(request, id):
+#     product = get_object_or_404(Productss, id=id)
+#     if request.method == 'POST':
+#         form = ProductReviewForm(request.POST)
+#         if form.is_valid():
+#             review = form.save(commit=False)
+#             review.user = request.user
+#             review.product = product
+#             review.save()
+#             return redirect('pdetail', id=product.id)
+#     else:
+#         form = ProductReviewForm()
+#     return render(request, 'add_review.html', {'form': form, 'product': product})
 
 @login_required
 def update_review(request, review_id):
