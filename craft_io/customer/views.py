@@ -230,24 +230,26 @@ def addToCart(request,*args,**kwargs):
 @method_decorator(decorator=decorators, name='dispatch')
 class CartListView(ListView):
     template_name = 'cart.html'
-    queryset=Cart.objects.all()
+    queryset = Cart.objects.all()
     context_object_name = 'carts'
-
-    
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         carts = self.get_queryset()
-        
+
         subtotal = sum(cart.total for cart in carts)
-        shipping_fee = sum(
-            (int(cart.product.ShippingFee) if cart.product.ShippingFee.isdigit() else 0) * cart.quantity
-            for cart in carts
-        )
-        
+        if subtotal > 5000:
+            shipping_fee = 0
+        else:
+            shipping_fee = sum(
+                (int(cart.product.ShippingFee) if cart.product.ShippingFee.isdigit() else 0) * cart.quantity
+                for cart in carts
+            )
+
         context['subtotal'] = subtotal
         context['shipping_fee'] = shipping_fee
         context['grand_total'] = subtotal + shipping_fee
+
         return context
 
 
