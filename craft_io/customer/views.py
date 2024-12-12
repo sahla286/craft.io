@@ -122,7 +122,7 @@ def product_detail(request, id):
         'category': product.category, 
     })
 
-@login_required
+@signin_required
 def view_reviews(request, pk):
     product = get_object_or_404(Productss, pk=pk)
     reviews = ProductReview.objects.filter(product=product)
@@ -192,7 +192,7 @@ def add_review(request, id):
     return render(request, 'add_review.html', {'form': form, 'product': product})
 
 
-@login_required
+@signin_required
 def update_review(request, review_id):
     review = get_object_or_404(ProductReview, id=review_id)
 
@@ -453,7 +453,7 @@ def about(request):
 
 
 
-@login_required
+@signin_required
 def add_delivery_address(request):
     if request.method == 'POST':
         form = DeliveryAddressForm(request.POST)
