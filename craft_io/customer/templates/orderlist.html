@@ -1,7 +1,7 @@
 {% extends 'navbar.html' %}
 {% block content %}
 
-<h2 class="text-center my-3">Order List ({{ orders.count }})</h2> 
+<h2 class="text-center my-3" style="font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;">Order List ({{ orders.count }})</h2> 
 {% if messages %}
 {% for i in messages %}
 {% if i.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
