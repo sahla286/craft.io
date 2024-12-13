@@ -108,6 +108,16 @@ input[type="checkbox"]:checked + label {
     <!-- rating and review -->
 
     <!-- add review -->
+    {% if messages %}
+    {% for i in messages %}
+    {% if i.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+    <div class="alert alert-danger alert-dismissible fade show mt-1">
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <strong>{{i}}</strong>
+    </div>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
     <form method="post" action="{% url 'add_review' product.id %}">
         {% csrf_token %}
         {{ form.as_p }}
