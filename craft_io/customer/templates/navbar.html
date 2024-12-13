@@ -52,10 +52,10 @@
     <!-- navbar -->
     <nav class="navbar navbar-expand-lg navbar-light p-1 ms-5 ">
         <div class="container-fluid">
-            <a class="navbar-brand me-5" href="#">
-                <h3 style="font-weight: 700;font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif">
-                    <img src="{% static 'image/logo5.png' %}" alt="" style="height: 40px;">
-                    CRAFT.IO
+            <a class="navbar-brand me-5" href="{% url 'shop' %}">
+                <h3 style="font-weight: 700;display: inline-flex; align-items: center;">
+                    <img src="{% static 'image/img2.png' %}" alt="" style="height: 40px;">
+                    <span style="margin-left: -15px;font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;">CRAFT.IO</span>
                 </h3>
             </a>
             <div class="collapse navbar-collapse d-flex justify-content-center" id="navbarTogglerDemo03">
@@ -191,10 +191,12 @@
 
 <footer class="text-dark py-4" >
     <div class="container">
-        <h3 style="font-weight: 700;font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif" class="text-center mb-4">
-            <img src="{% static 'image/logo5.png' %}" alt="" style="height: 40px;">
-            CRAFT.IO
+        <a class="navbar-brand me-5" href="{% url 'shop' %}">
+        <h3 style="font-weight: 700;" class="text-center mb-3">
+            <img src="{% static 'image/img2.png' %}" alt="" style="height: 40px;">
+            <span style="margin-left: -20px;font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;">CRAFT.IO</span>
         </h3>
+    </a>
       <div class="row">
 
             <div class="d-flex gap-4 justify-content-center mb-4">
