@@ -51,7 +51,6 @@
                 {% endif %}
                 {% if request.user.is_superuser %}
                     <div class="col-md-2">
-                        <!-- Delete Review Form -->
                         <form method="POST">
                             {% csrf_token %}
                             <input type="hidden" name="delete_review" value="{{ review.id }}">
@@ -62,8 +61,6 @@
                     </div>
                 {% endif %}
             </div>
-
-    
             
             <hr>
         {% empty %}

@@ -71,7 +71,6 @@ input[type="checkbox"]:checked + label {
         </div>
         <div class="col d-flex flex-column " ><br>
             <h4><b>{{product.title}}</b></h4>
-            <!-- <p class="mt-2"><b>Average Rating:</b> {{ avg_rating|floatformat:1 }}/5</p> -->
             <p class="mt-2" style="color: goldenrod;font-size:x-large;">
                 {% for i in 5|range_filter %}
                     {% if i < avg_rating %}
@@ -98,9 +97,8 @@ input[type="checkbox"]:checked + label {
             
             <p style="font-weight: bold;font-size: large;" class="mt-1">Shipping Fee : <span style="font-weight: lighter;">{{product.ShippingFee}}</span>
             <div>
-                <!-- <a href="" class="btn btn-outline-primary text-dark mb-5"> -->
                 <a href="{% url 'addtocart' product.id %}" class="btn text-light d-flex justify-content-center" style="background-color: #ff4141;width: 170px;border-radius: 0px;height: 50px;">
-                    <!-- <i class="fa-solid fa-cart-plus" style="color: #f7f8f8;"></i> -->
+
                     <b class="ms-2">ADD TO CART</b>
                 </a>
             </div>

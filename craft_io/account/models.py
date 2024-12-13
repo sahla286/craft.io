@@ -29,7 +29,6 @@ class Cart(models.Model):
     total=models.IntegerField()
 
     def save(self, *args, **kwargs):
-        # Calculate the total price for the cart item before saving
         self.total = self.product.price * self.quantity
         super().save(*args, **kwargs)
 
@@ -67,7 +66,7 @@ class Orders(models.Model):
     product = models.ForeignKey(Productss, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     datatime = models.DateTimeField(auto_now_add=True)
-    quantity = models.IntegerField()  # Change this to IntegerField
+    quantity = models.IntegerField() 
     total = models.IntegerField() 
     options = (
         ('OrderPlaced', 'OrderPlaced'),

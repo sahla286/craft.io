@@ -36,7 +36,7 @@
 }
 </style>
 
-<!-- Banner Section -->
+<!-- banner -->
 <div class="d-flex align-items-center" style="background: linear-gradient(to top,white, #fde1ff);">
     <div class="col" style="margin-left: 65px;">
         <h6 style="font-size: 20px; font-weight: bold;">NEW ARRIVALS ONLY</h6><br>
@@ -63,7 +63,7 @@
     <div class="card" style="width: 16rem; border-radius: 0%; margin-top: 50px;">
         <img src="{{i.image.url}}" height="250px" class="card-img-top" alt="...">
         <a href="{% url 'add_to_wishlist' i.id %}" class="mt-2 position-absolute top-0 end-0 m-2 text-danger" style="font-size: 30px; z-index: 10;">
-            <i class="fas fa-heart" style="color: #7d1a06"></i> 
+            <i class="fa-regular fa-heart fa-fade fa-xs" style="color: #fafafa;"></i>
         </a>
         <div class="card-body">
             <h6 class="card-title">{{i.title}}</h6>
@@ -103,7 +103,7 @@
         <img src="{{i.image.url}}" height="250px" class="card-img-top" alt="...">
     
         <a href="{% url 'add_to_wishlist' i.id %}" class="mt-2 position-absolute top-0 end-0 m-2 text-danger" style="font-size: 30px; z-index: 10;">
-            <i class="fas fa-heart" style="color: #7d1a06;"></i>
+            <i class="fa-regular fa-heart fa-fade fa-xs" style="color: #fafafa;"></i>
         </a>
         
         <div class="card-body">

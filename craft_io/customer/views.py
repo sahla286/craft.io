@@ -129,7 +129,6 @@ def view_reviews(request, pk):
     # reply_form = ReviewReplyForm()
 
     if request.method == 'POST':
-        # Handle review deletion
         if 'delete_review' in request.POST:
             review_id = request.POST.get('delete_review')
             review = get_object_or_404(ProductReview, id=review_id)
@@ -137,12 +136,11 @@ def view_reviews(request, pk):
                 review.delete()
                 return redirect('view_reviews', pk=pk)
 
-        # Handle replying to a review
+       
         # if 'reply_to_review' in request.POST:
         #     review_id = request.POST.get('reply_to_review')
         #     review = get_object_or_404(ProductReview, id=review_id)
             
-        #     # Check if a reply already exists for this review
         #     existing_reply = ReviewReply.objects.filter(review=review).first()
         #     if existing_reply:
         #         messages.error(request, "A reply already exists for this review.")
@@ -195,15 +193,10 @@ def add_review(request, id):
 @signin_required
 def update_review(request, review_id):
     review = get_object_or_404(ProductReview, id=review_id)
-
-    # Ensure the product's category exists before rendering the template
     if not review.product.category:
-        # Redirect to a fallback page if the category is missing
         return redirect('shop')
-
     if request.method == 'POST':
         form = ProductReviewForm(request.POST, instance=review)
-        
         if form.is_valid():
             form.save()
             return redirect(reverse('pdetail', kwargs={'id': review.product.id}))
@@ -330,13 +323,9 @@ def placeorder(request):
 
         for cart in cart_items:
             product = cart.product
-            # Check if the product is in stock
             if product.stock > 0:
-                # Decrease the stock by the quantity ordered
                 product.stock -= cart.quantity
                 product.save()
-
-                # Create the order
                 Orders.objects.create(
                     product=cart.product,
                     user=request.user,
@@ -347,10 +336,7 @@ def placeorder(request):
                 messages.error(request, f"Sorry, {cart.product.title} is out of stock!")
                 return redirect('cartlist')
 
-            # Delete the cart item after placing the order
             cart.delete()
-
-            # Send confirmation email
             subject = 'Craft.io Order Confirmation'
             html_content = format_html(
                 f"""
@@ -392,17 +378,13 @@ def CancelOrder(request, **kwargs):
 
         order = get_object_or_404(Orders, id=oid)
 
-        # Check if the order can be canceled
         if order.status == 'Delivered':
             messages.error(request, "Delivered orders cannot be canceled.")
             return redirect('orderlist')
-
-        # Increase the product's stock by the quantity of the canceled order
         product = order.product
         product.stock += order.quantity
         product.save()
 
-        # Delete the order
         order.delete()
 
         messages.success(request, 'Your order has been canceled.')
@@ -414,7 +396,6 @@ def CancelOrder(request, **kwargs):
 
 
 
-# Search Product
 def searchproduct(request):
     keyword = request.POST.get('searchkey', '')
     cat = request.session.get('category', '')
@@ -444,7 +425,7 @@ def contact(request):
         except Exception as e:
             messages.error(request, f"An error occurred: {e}")
 
-        return redirect('contact')  # Redirect to the same page after submission
+        return redirect('contact')
 
     return render(request, 'contact.html')
 
