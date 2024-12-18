@@ -70,7 +70,10 @@
 <div class="d-flex justify-content-center flex-wrap mt-5" style="gap: 30px;">
     {% for i in latest_products %}
     <div class="card" style="width: 16rem; border-radius: 0%; margin-top: 50px;">
+        
         <img src="{{i.image.url}}" height="250px" class="card-img-top" alt="...">
+        <span class="badge bg-dark position-absolute top-0 start-0 m-2" style="z-index: 10;">New</span>
+        
         <a href="{% url 'add_to_wishlist' i.id %}" class="mt-2 position-absolute top-0 end-0 m-2 text-danger" style="font-size: 30px; z-index: 10;">
             <i class="fa-regular fa-heart fa-fade fa-xs" style="color: #fafafa;"></i>
         </a>
