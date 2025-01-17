@@ -1,12 +1,10 @@
 from django.shortcuts import render,redirect
 from .forms import *
 from django.views.generic import FormView,CreateView
-from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView
-from django.contrib.auth.forms import PasswordResetForm
+from django.contrib.auth.views import PasswordResetView
 from django.urls import reverse_lazy
 from django.contrib.auth import authenticate, login,logout
 from django.views import View
-from django.contrib.auth import views as auth_views
 from django.contrib.messages.views import SuccessMessageMixin
 
 

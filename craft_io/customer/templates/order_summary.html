@@ -1,8 +1,0 @@
-{% extends 'navbar.html' %}
-
-{% block content %}
-  <h2>Order Summary</h2>
-  <p><strong>Delivery Address:</strong></p>
-  <p>{{ user.deliveryaddress_set.first }}</p> 
-  <a href="{% url 'edit_address' address_id=user.deliveryaddress_set.first.id %}">Edit Address</a>
-{% endblock content %}

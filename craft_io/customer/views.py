@@ -3,7 +3,7 @@ from django.views.generic import ListView,DetailView
 from account.models import *
 from django.db.models import Avg
 from django.shortcuts import get_object_or_404
-from django.contrib.auth.decorators import login_required
+# from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from .forms import *
 from django.core.mail import send_mail
@@ -447,33 +447,4 @@ def add_delivery_address(request):
         form = DeliveryAddressForm()
 
     return render(request, 'delivery_address_form.html', {'form': form})
-
-
-# @login_required
-# def edit_delivery_address(request, address_id):
-#     address = DeliveryAddress.objects.get(id=address_id, user=request.user)
-    
-#     if request.method == 'POST':
-#         form = DeliveryAddressForm(request.POST, instance=address)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('placeorder')
-
-#     else:
-#         form = DeliveryAddressForm(instance=address)
-
-#     return render(request, 'delivery_address_form.html', {'form': form})
-
-
-# @login_required
-# def order_summary(request):
-#     # Check if the user has a delivery address
-#     address = DeliveryAddress.objects.filter(user=request.user).first()
-#     if not address:
-#         return redirect('add_delivery_address')  # Redirect to the add address page if no address exists
-
-#     # If the address exists, render the order summary
-#     return render(request, 'order_summary.html', {'address': address})
-
-
 

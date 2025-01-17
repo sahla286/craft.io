@@ -24,6 +24,5 @@ urlpatterns = [
     path('contact/', contact, name='contact'),
     path('about/', about, name='about'), 
     path('add-address/', add_delivery_address, name='add_address'),
-    # path('edit-address/<int:address_id>/', edit_delivery_address, name='edit_address'),
-    # path('order-summary/', order_summary, name='order_summary'),
+
 ]

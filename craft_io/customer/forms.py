@@ -10,13 +10,6 @@ class ProductReviewForm(forms.ModelForm):
             'comment': forms.Textarea(attrs={'rows': 4, 'cols': 50}),
         }
 
-# class ReviewReplyForm(forms.ModelForm):
-#     class Meta:
-#         model = ReviewReply
-#         fields = ['reply_text']
-#         widgets = {
-#             'reply_text': forms.Textarea(attrs={'rows': 3, 'cols': 50}),
-#         }
 
 class DeliveryAddressForm(forms.ModelForm):
     class Meta:

@@ -4,9 +4,7 @@
 {% load custom_filters %}
 
 
-<!-- Styling for hover effects -->
 <style>
-    /* Optional: Hover effect for the entire card */
     .card {
         transition: transform 0.6s ease, box-shadow 0.6s ease;
     }
@@ -18,32 +16,31 @@
 
 
     .newcl {
-    display: inline-block; /* Inline-block ensures proper centering */
-    position: relative;    /* Allows positioning of the underline */
-    padding-bottom: 5px;   /* Adds spacing between text and the underline */
+    display: inline-block; 
+    position: relative;   
+    padding-bottom: 5px;   
 }
 
 .newcl::after {
-    content: '';           /* Create the underline */
-    position: absolute;    /* Position relative to the text */
-    bottom: 0;             /* Align to the bottom of the text */
-    left: 50%;             /* Start at the center of the text */
-    width: 40%;            /* Set the width of the underline */
-    height: 4px;           /* Thickness of the underline */
-    background-color: black; /* Color of the underline */
-    transform: translateX(-50%); /* Center the underline */
+    content: '';       
+    position: absolute; 
+    bottom: 0;            
+    left: 50%;            
+    width: 40%;        
+    height: 4px;          
+    background-color: black;
+    transform: translateX(-50%); 
     margin: -10px;
 }
 </style>
 
-<!-- Combined Scrolling Announcement -->
+<!-- scroll -->
 <div class="overflow-hidden" style="background-color: #fde1ff; padding: 10px; white-space: nowrap;">
-    <marquee behavior="scroll" direction="left" style="font-size: 18px; color: #333;">
+    <marquee behavior="scroll" direction="left" style="font-size: 19px; color: #333;">
         🎉 Our Anniversary Special Offer – Limited Time Only! Don't Miss Out! 🎉 |
         🛍️ Special Discounts on New Arrivals! | 💥 Limited Stock, Hurry Up!
     </marquee>
 </div>
-
 
 <!-- banner -->
 <div class="d-flex align-items-center" style="background: linear-gradient(to top,white, #fde1ff);">

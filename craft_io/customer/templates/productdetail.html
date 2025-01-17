@@ -4,37 +4,33 @@
 
 
 <style>
-    /* Hide the radio buttons */
 input[type="checkbox"] {
-    visibility: hidden; /* Make radio buttons invisible */
+    visibility: hidden;
 }
-
-/* Style the stars */
 input[type="checkbox"] + label {
-    font-size: 25px;    /* Adjust the size of the stars */
-    color: #ddd;        /* Default color for the stars (unselected) */
-    cursor: pointer;    /* Cursor pointer when hovering over the stars */
+    font-size: 25px;  
+    color: #ddd;      
+    cursor: pointer;  
 }
 
-/* Style for when the radio button is selected */
 input[type="checkbox"]:checked + label {
-    color:goldenrod;         /* Color of the stars when selected */
+    color:goldenrod;         /
 }
 .related-title {
-    display: inline-block; /* Inline-block ensures proper centering */
-    position: relative;    /* Allows positioning of the underline */
-    padding-bottom: 5px;   /* Adds spacing between text and the underline */
+    display: inline-block;
+    position: relative; 
+    padding-bottom: 5px;  
 }
 
 .related-title::after {
-    content: '';           /* Create the underline */
-    position: absolute;    /* Position relative to the text */
-    bottom: 0;             /* Align to the bottom of the text */
-    left: 50%;             /* Start at the center of the text */
-    width: 50%;            /* Set the width of the underline */
-    height: 4px;           /* Thickness of the underline */
-    background-color: black; /* Color of the underline */
-    transform: translateX(-50%); /* Center the underline */
+    content: '';           
+    position: absolute;   
+    bottom: 0;             
+    left: 50%;            
+    width: 50%;           
+    height: 4px;          
+    background-color: black; 
+    transform: translateX(-50%); 
     margin: -10px;
 }
 
